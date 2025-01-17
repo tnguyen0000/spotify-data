@@ -1,10 +1,24 @@
 import express, { Request, Response} from 'express';
 import dotenv from 'dotenv';
+import { getAccessToken, getUserAuth } from './spotifyAPI';
 
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT;
+const PORT = process.env.PORT;
+
+// Get access token
+app.get('/get_token', (req: Request, res: Response) => {
+  getUserAuth().then(() => {
+    getAccessToken()
+  })
+});
+
+// Print token
+app.get('/print', (req: Request, res: Response) => {
+  const access_token = localStorage.getItem('access_token');
+  console.log(access_token)
+});
 
 // Stub for retrieving data
 app.get('/get_data', (req: Request, res: Response) => {
@@ -12,11 +26,11 @@ app.get('/get_data', (req: Request, res: Response) => {
 });
 
 // Starts server
-const server = app.listen(port, () => {
-  console.log(`Currently running server at http://localhost:${port}`)
+const server = app.listen(PORT, () => {
+  console.log(`Currently running server at http://localhost:${PORT}`)
 });
 
 // 
 process.on('SIGINT', () => {
-  server.close(() => console.log(`Closed server at http://localhost:${port}`));
+  server.close(() => console.log(`Closed server at http://localhost:${PORT}`));
 });
