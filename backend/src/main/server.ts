@@ -2,7 +2,9 @@
 // https://developer.spotify.com/documentation/web-api/tutorials/code-flow
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
-import querystring from 'querystring'
+import querystring from 'querystring';
+import cors from 'cors';
+import { getTokens } from './spotifyAPI';
 
 dotenv.config();
 
@@ -10,10 +12,11 @@ const app = express();
 const PORT = process.env.PORT;
 const PORT_FRONT = process.env.PORT_FRONT;
 const CLIENT_ID = process.env.CLIENT_ID;
-const SECRET_ID = process.env.SECRET_ID;
 const STATE = process.env.STATE;
 const URL = `http://localhost:${PORT}`;
 const REDIRECT = `http://localhost:${PORT_FRONT}/dashboard`;
+
+app.use(cors())
 
 // Testing route
 app.get('/print', (req: Request, res: Response): any => {
@@ -26,10 +29,9 @@ app.get('/print', (req: Request, res: Response): any => {
 });
 
 // Get user authorisation
-app.get('/get_auth', (req: Request, res: Response) => {
+app.get('/get_auth', (req: Request, res: Response): any => {
   let scope = 'user-read-private user-read-email';
-
-  res.redirect('https://accounts.spotify.com/authorize?' +
+  return res.json('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
       client_id: CLIENT_ID,
@@ -39,31 +41,15 @@ app.get('/get_auth', (req: Request, res: Response) => {
     }));
 });
 
-app.get('/callback', function(req, res) {
-  let code = req.query.code || null;
-  let state = req.query.state || null;
-
-  if (state === null) {
-    res.redirect('/#' +
-      querystring.stringify({
-        error: 'state_mismatch'
-      }));
-  } else {
-    let authOptions = {
-      url: 'https://accounts.spotify.com/api/token',
-      form: {
-        code: code,
-        redirect_uri: REDIRECT,
-        grant_type: 'authorization_code'
-      },
-      headers: {
-        'content-type': 'application/x-www-form-urlencoded',
-        // @ts-expect-error
-        'Authorization': 'Basic ' + (new Buffer.from(CLIENT_ID + ':' + SECRET_ID).toString('base64'))
-      },
-      json: true
-    };
+// Gets access token for the first time
+app.get('/callback', async (req: Request, res: Response): Promise<any> => {
+  let code = req.query.code as string || null;
+  // TODO!: implement state check : let state = req.query.state || null;
+  if (!code) {
+    return res.json('Something went wrong. Code not assigned')
   }
+  const tokens = await getTokens(code, REDIRECT);
+  return res.json(tokens);
 });
 
 // Stub for retrieving data

@@ -1,10 +1,6 @@
-import dotenv from 'dotenv';
+const PORT_BACK = import.meta.env.VITE_PORT_BACK;
 
-dotenv.config();
-
-const PORT_BACK = process.env.PORT_BACK;
-
-export const apiCallBody = async (inputMethod: string, path: string, requestBody: string) => {
+export const apiCallBody = async (inputMethod: string, path: string, requestBody?: string) => {
   try {
     const data = await fetch(`http://localhost:${PORT_BACK}` + path, {
       method: inputMethod,
@@ -14,7 +10,7 @@ export const apiCallBody = async (inputMethod: string, path: string, requestBody
       body: JSON.stringify(requestBody)
     })
     return data.json();
-  } catch (err) {
-    return err;
+  } catch (error) {
+    return error;
   }
 };
