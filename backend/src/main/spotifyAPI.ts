@@ -19,14 +19,20 @@ export async function getTokens(code: string, redirect: string) {
       // @ts-expect-error
       'Authorization': 'Basic ' + (new Buffer.from(CLIENT_ID + ':' + SECRET_ID).toString('base64'))
     },
-    body: JSON.stringify(requestBody),
-    // @ts-expect-error
-    json: true
+    body: new URLSearchParams(requestBody)
   })
-  
+
   if (!tokens.ok) {
     console.log(`Failed request: ${tokens.status} ${tokens.statusText}`)
   };
-  // TODO!: return proper fields
-  return tokens.ok;
+  return tokens.json();
+}
+
+export async function getUser(access: string) {
+let user = await fetch('https://api.spotify.com/v1/me', {
+  headers: {
+    'Authorization': 'Bearer ' + access
+  }
+});
+  return user.json();
 }

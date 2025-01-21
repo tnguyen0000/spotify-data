@@ -4,7 +4,7 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import querystring from 'querystring';
 import cors from 'cors';
-import { getTokens } from './spotifyAPI';
+import { getTokens, getUser } from './spotifyAPI';
 
 dotenv.config();
 
@@ -49,12 +49,23 @@ app.get('/callback', async (req: Request, res: Response): Promise<any> => {
     return res.json('Something went wrong. Code not assigned')
   }
   const tokens = await getTokens(code, REDIRECT);
+  console.log(tokens)
   return res.json(tokens);
 });
 
-// Stub for retrieving data
-app.get('/get_data', (req: Request, res: Response) => {
-  // TODO!: Fill MongoDB with spotify data
+// Get basic user information
+app.get('/me', async (req: Request, res: Response): Promise<any> => {
+  let access = req.query.access as string;
+  const user = await getUser(access);
+  console.log(user)
+  if (user.error) {
+    return res.json(user)
+  }
+  return res.json({
+    display_name: user.display_name,
+    images: user.images,
+    uri: user.uri,
+  });
 });
 
 // Starts server
