@@ -4,7 +4,7 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import querystring from 'querystring';
 import cors from 'cors';
-import { getTokens, getUser } from './spotifyAPI';
+import { getRefresh, getTokens, getUser } from './spotifyAPI';
 
 dotenv.config();
 
@@ -49,7 +49,16 @@ app.get('/callback', async (req: Request, res: Response): Promise<any> => {
     return res.json('Something went wrong. Code not assigned')
   }
   const tokens = await getTokens(code, REDIRECT);
-  console.log(tokens)
+  return res.json(tokens);
+});
+
+// Refreshes the access token given a refresh token
+app.get('/refresh', async (req: Request, res: Response): Promise<any> => {
+  let refresh = req.query.refresh as string || null;
+  if (!refresh) {
+    return res.json('Something went wrong. Refresh token not assigned')
+  }
+  const tokens = await getRefresh(refresh, REDIRECT);
   return res.json(tokens);
 });
 
@@ -57,7 +66,6 @@ app.get('/callback', async (req: Request, res: Response): Promise<any> => {
 app.get('/me', async (req: Request, res: Response): Promise<any> => {
   let access = req.query.access as string;
   const user = await getUser(access);
-  console.log(user)
   if (user.error) {
     return res.json(user)
   }

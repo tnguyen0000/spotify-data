@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { apiCallBody } from "../api/apiHelpers";
+import { getRefresh, getToken } from "../api/auth";
+import { getUserData } from "../api/userUtils";
+import './styles/components.css';
 
 const Dashboard = () => {
   const [token, setToken] = useState('');
@@ -7,58 +9,62 @@ const Dashboard = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     let code = urlParams.get('code');
-    let state = urlParams.get('state')
+    let state = urlParams.get('state');
     if (code && state) {
-      code = `?code=${code}`
-      state = `?state=${state}`
-      const getToken = async () => {
-        let tokens = await apiCallBody('GET', '/callback' + code + '&' + state, undefined);
-        // TODO!: Fix tokens.ok
-        if (!tokens.error) {
-          setToken(tokens.access_token);
-          localStorage.setItem('access_token', tokens.access_token);
-          let currDateTime = new Date();
-          currDateTime.setSeconds(currDateTime.getSeconds() + tokens.expires_in)
-          localStorage.setItem('access_token_expire', currDateTime.getTime().toString());
-          localStorage.setItem('refresh_token', tokens.refresh_token);
-        } else {
-            // TODO!: Add proper error handling to frontend webpage
-            console.log('Something went wrong', tokens);
-        }
-      };
-      getToken();
+      getToken(setToken, code, state);
     } else {
       console.log(localStorage)
-      let access = localStorage.getItem('access_token');
-      let expiry = localStorage.getItem('access_token_expire');
+      const access = localStorage.getItem('access_token');
+      const expiry = localStorage.getItem('access_token_expire');
+      const refresh = localStorage.getItem('refresh_token');
       if (access && expiry && parseInt(expiry) >= (new Date).getTime()) {
         setToken(access);
+      } else if ((expiry && parseInt(expiry) < (new Date).getTime())) {
+        if (refresh) {
+          getRefresh(setToken, refresh);
+        }
       } else {
-        // TODO!: add refreshing access token route / functionality
-        // let refresh = localStorage.getItem('refresh_token');
+        console.log('Something went wrong, no refresh or expiry token.');
       }
     };
   }, []);
 
   useEffect(() => {
-    const getUser = async () => {
-      const access = `?access=${token}`
-      let user = await apiCallBody('GET', '/me' + access);
-      setUser(user);
+    const userObj = localStorage.getItem('userData');
+    if (!userObj) {
+      getUserData(setUser, token);
+    } else {
+      const userParse = JSON.parse(userObj);
+      if (userParse.error) {
+        getUserData(setUser, token);
+      } else { 
+        setUser(userParse);
+      }
     }
-    getUser();
-  }, [token]);
+    
+  }, []);
 
   return (
-    <div>
-      Dashboard
-      <div>
-        {user.display_name}
+    <>
+      <div id="dashboard-top">
+        <a className="profile-pic-link" href={user.uri ? user.uri : "#"}>
+          <img className="profile-pic"
+            src={user.images ? user.images[0].url : "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"} alt="Profile Pic" 
+          />
+        </a>
+        <h1>
+          {user.display_name ? user.display_name : "Error retrieving name"}
+        </h1>
       </div>
-      <div>
-        <img src={user.images ? user.images[0].url : ''} alt="https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg" />
+      <div id="dashboard-bottom">
+        <div>
+          TODO!: TOP SONGS/ARTISTS
+        </div>
+        <div>
+          TODO!: PLAYLIST DATA
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
