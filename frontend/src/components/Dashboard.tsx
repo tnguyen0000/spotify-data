@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getRefresh, getToken } from "../api/auth";
 import { getUserData } from "../api/userUtils";
-import './styles/components.css';
+import './styles/dashboard.css';
 
 const Dashboard = () => {
   const [token, setToken] = useState('');
@@ -45,26 +45,48 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <>
+    <div id="dashboard">
       <div id="dashboard-top">
         <a className="profile-pic-link" href={user.uri ? user.uri : "#"}>
           <img className="profile-pic"
             src={user.images ? user.images[0].url : "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"} alt="Profile Pic" 
           />
         </a>
-        <h1>
+        <h1 id="username">
           {user.display_name ? user.display_name : "Error retrieving name"}
         </h1>
       </div>
       <div id="dashboard-bottom">
-        <div>
-          TODO!: TOP SONGS/ARTISTS
+        <div id="song-artist-nav">
+          <a className="dashboard-nav-button" href="/topstats?type=songs">
+            <span>
+              <h1>
+                TOP SONGS
+              </h1>
+              <img src="https://cdn.pixabay.com/photo/2017/01/09/20/11/music-1967480_1280.png" alt="" />
+            </span>
+          </a>
+          <a className="dashboard-nav-button" href="/topstats?type=artists">
+            <span>
+              <h1>
+                TOP ARTISTS
+              </h1>
+              <img src="https://cdn-icons-png.freepik.com/512/199/199478.png" alt="" />
+            </span>
+          </a>
         </div>
-        <div>
-          TODO!: PLAYLIST DATA
+        <div id="playlist-nav">
+          <a className="dashboard-nav-button" href="/playliststats">
+            <span>
+              <h1>
+                PLAYLIST DATA
+              </h1>
+              <img src="https://cdn-icons-png.freepik.com/256/6823/6823229.png?semt=ais_hybrid" alt="" />
+            </span>
+          </a>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

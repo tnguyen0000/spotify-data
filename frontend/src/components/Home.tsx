@@ -1,13 +1,17 @@
 import { apiCallBody } from "../api/apiHelpers";
 
+import './styles/home.css';
+
 const Home = () => {
   return (
-    <>
-      <div>
-        <h1>
-          Home
-        </h1>
-        <button
+    <div id="home">
+      <h1>
+        Home
+      </h1>
+      <p>
+        This is my app which allows you to check interesting stats about your Spotify account.
+      </p>
+      <button
         onClick={(e) => {
           e.preventDefault();
           const executeAuth = async () => {
@@ -19,11 +23,10 @@ const Home = () => {
             }            
           }
           executeAuth();
-        }}>
-           Click here for data
-        </button>
-      </div>
-    </>
+      }}>
+          Sign in with Spotify
+      </button>
+    </div>
   );
 };
 
