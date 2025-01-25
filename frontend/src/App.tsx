@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import Home from './components/Home'
 import Dashboard from './components/Dashboard'
 import './App.css'
-import TopStatsPage from './components/TopStatsPage'
+import TopStatsPage from './components/topstats/TopStatsPage'
 import PlaylistPage from './components/PlaylistStatsPage'
 
 function App() {

@@ -4,7 +4,7 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import querystring from 'querystring';
 import cors from 'cors';
-import { getRefresh, getTokens, getUser } from './spotifyAPI';
+import { getRefresh, getTokens, getUser, getTopStats } from './spotifyAPI';
 
 dotenv.config();
 
@@ -54,7 +54,7 @@ app.get('/callback', async (req: Request, res: Response): Promise<any> => {
 
 // Refreshes the access token given a refresh token
 app.get('/refresh', async (req: Request, res: Response): Promise<any> => {
-  let refresh = req.query.refresh as string || null;
+  const refresh = req.query.refresh as string || null;
   if (!refresh) {
     return res.json('Something went wrong. Refresh token not assigned')
   }
@@ -64,7 +64,7 @@ app.get('/refresh', async (req: Request, res: Response): Promise<any> => {
 
 // Get basic user information
 app.get('/me', async (req: Request, res: Response): Promise<any> => {
-  let access = req.query.access as string;
+  const access = req.query.access as string;
   const user = await getUser(access);
   if (user.error) {
     return res.json(user)
@@ -74,6 +74,18 @@ app.get('/me', async (req: Request, res: Response): Promise<any> => {
     images: user.images,
     uri: user.uri,
   });
+});
+
+// Get users top stats
+app.get('/me/topStats', async (req: Request, res: Response): Promise<any> => {
+  const access = req.query.access as string;
+  const type = req.query.type as string;
+  const timeRange = req.query.timeRange as string;
+  const user = await getTopStats(access, type, timeRange);
+  if (user.error) {
+    return res.json(user)
+  }
+  return res.json(user);
 });
 
 // Starts server

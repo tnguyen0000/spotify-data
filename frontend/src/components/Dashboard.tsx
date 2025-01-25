@@ -19,10 +19,8 @@ const Dashboard = () => {
       const refresh = localStorage.getItem('refresh_token');
       if (access && expiry && parseInt(expiry) >= (new Date).getTime()) {
         setToken(access);
-      } else if ((expiry && parseInt(expiry) < (new Date).getTime())) {
-        if (refresh) {
+      } else if (refresh) {
           getRefresh(setToken, refresh);
-        }
       } else {
         console.log('Something went wrong, no refresh or expiry token.');
       }

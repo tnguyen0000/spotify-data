@@ -1,9 +1,12 @@
 #statspage-container {
   height: 100vh;
+  width: 100%;
   display: flex;
   justify-content: start;
   align-items: stretch;
   flex-direction: column;
+  gap: 5px;
+  background-color: lightslategrey;
 }
 
 #category-container {
@@ -13,6 +16,7 @@
   gap: 2px;
   background-color: #1db954;
   height: 15vh;
+  border-radius: 10px;
 }
 
 .category-label {
@@ -28,7 +32,7 @@
   width: max(10%, 10vh);
   text-align: center;
   font-size: max(1.5vw, 3vh);
-  border-radius: 20px;
+  border-radius: 10px;
 }
 
 input {
@@ -43,6 +47,47 @@ input:checked + span {
 }
 
 #items-container {
-  background-color: red;
-  height: 95vh
+  display: grid;
+  grid-template-columns: repeat(auto-fit, max(18vw, 15vh));
+  gap: 1px;
+  justify-content: center;
+  background-color: lightslategrey;
+}
+
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  background-color: lightgray;
+  aspect-ratio: 1 / 1;
+  display: block;
+  border-radius: 1px;
+  font-size: max(1.7vw, 1.8vh);
+}
+
+.stat-card img {
+  height: 100%;
+  width: 100%;
+}
+
+.card-name {
+  position: absolute;
+  display: block;
+  margin: 0;
+  width: 95%;
+  top: 0;
+  left: 5%;
+  opacity: 0;
+  transition: 1s;
+
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-card:hover img {
+  opacity: 50%;
+}
+
+.stat-card:hover .card-name {
+  opacity: 1;
 }
