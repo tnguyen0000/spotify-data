@@ -18,7 +18,17 @@
   font-size: calc(9px + 4vw);
 }
 
+#logout-btn {
+  position: absolute;
+  right: 20px;
+  bottom: 10px;
+  width: max(9%, 10vh);
+  height: max(4%, 4vh);
+  font-size: max(2vw, 2vh);
+}
+
 #dashboard-top {
+  position: relative;
   display: flex;
   justify-content: start;
   align-items: center;

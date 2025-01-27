@@ -26,6 +26,7 @@ export async function getTokens(code: string, redirect: string) {
   if (!tokens.ok) {
     console.log(`Failed access request: ${tokens.status} ${tokens.statusText}`)
   };
+
   return tokens.json();
 };
 
@@ -68,20 +69,22 @@ export async function getUser(access: string) {
 
 // Retrieves user data
 // type should be either 'artists' or 'tracks'
-// timeRange should be either 'short_term', 'medium_term', or 'long_term'
-export async function getTopStats(access: string, type: string, timeRange: string) {
+export async function getTopStats(access: string, type: string) {
   // TODO!: Add mongo integration so dont have to query spotify API several times
-  const timeStr = `time_range=${timeRange}`;
+  // 'medium_term', 'long_term'
+  const timeRanges = ['short_term',];
+  const topStats: Promise<any>[] = [];
   const limitStr = 'limit=50';
-  const urlStr = 'https://api.spotify.com/v1/me/top/' + type + '&' + timeStr + '&' + limitStr;
-  let user = await fetch(urlStr, {
-    method: 'GET',
-    headers: {
-      'Authorization': 'Bearer ' + access
-    }
-  });
-  if (!user.ok) {
-    console.log(`Failed user request: ${user.status} ${user.statusText}`)
+  for (const timeRange of timeRanges) {
+    const timeStr = `time_range=${timeRange}`;
+    const urlStr = 'https://api.spotify.com/v1/me/top/' + type + '?' + limitStr + '&' + timeStr;
+    const request = fetch(urlStr, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + access
+      }
+    });
+    topStats.push(request);
   };
-  return user.json();
+  return topStats;
 };

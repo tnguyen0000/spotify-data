@@ -2,23 +2,31 @@ import { useEffect, useState } from "react";
 
 import '../styles/userstatspage.css'
 import StatCard from "./StatCard";
+import { getTopStats } from "../../api/userUtils";
+import { useNavigate } from "react-router-dom";
 
 const TopStatsPage = () => {
   const [checked, setChecked] = useState('long_term');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     let type = urlParams.get('type');
     const access = localStorage.getItem('access_token');
-    switch (type) {
-      case "artists":
-        console.log('artists')
-        break;
-      case "songs":
-        console.log('songs')
-        break;
-      default:
-        console.log("TODO!: ERROR CHECK")
+    if (!access) {
+      navigate('/');
+    } else {
+      switch (type) {
+        case "artists":
+          const i = getTopStats(access, 'artists');
+          console.log(i)
+          break;
+        case "songs":
+          console.log('songs')
+          break;
+        default:
+          console.log("TODO!: ERROR CHECK")
+      }
     }
   }, []);
 

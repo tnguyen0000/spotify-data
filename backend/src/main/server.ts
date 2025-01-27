@@ -30,7 +30,7 @@ app.get('/print', (req: Request, res: Response): any => {
 
 // Get user authorisation
 app.get('/get_auth', (req: Request, res: Response): any => {
-  let scope = 'user-read-private user-read-email';
+  let scope = 'user-read-email user-library-read user-top-read playlist-read-private user-read-currently-playing';
   return res.json('https://accounts.spotify.com/authorize?' +
     querystring.stringify({
       response_type: 'code',
@@ -80,12 +80,12 @@ app.get('/me', async (req: Request, res: Response): Promise<any> => {
 app.get('/me/topStats', async (req: Request, res: Response): Promise<any> => {
   const access = req.query.access as string;
   const type = req.query.type as string;
-  const timeRange = req.query.timeRange as string;
-  const user = await getTopStats(access, type, timeRange);
-  if (user.error) {
-    return res.json(user)
-  }
-  return res.json(user);
+  const topStats = await getTopStats(access, type);
+  Promise.all(topStats).then((v) => {
+    console.log(v)
+  }).then((resolved) => {
+    return res.json(resolved);
+  })
 });
 
 // Starts server

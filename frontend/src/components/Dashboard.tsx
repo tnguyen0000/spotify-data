@@ -1,17 +1,21 @@
 import { useEffect, useState } from "react";
 import { getRefresh, getToken } from "../api/auth";
 import { getUserData } from "../api/userUtils";
+import { useNavigate } from "react-router-dom";
 import './styles/dashboard.css';
 
 const Dashboard = () => {
   const [token, setToken] = useState('');
   const [user, setUser]: any = useState({});
+  const navigate = useNavigate();
+  // Sets the access token if first time logging in OR refreshes access token if logged in previously
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     let code = urlParams.get('code');
     let state = urlParams.get('state');
     if (code && state) {
       getToken(setToken, code, state);
+      navigate('/dashboard')
     } else {
       console.log(localStorage)
       const access = localStorage.getItem('access_token');
@@ -20,13 +24,14 @@ const Dashboard = () => {
       if (access && expiry && parseInt(expiry) >= (new Date).getTime()) {
         setToken(access);
       } else if (refresh) {
-          getRefresh(setToken, refresh);
+        getRefresh(setToken, refresh);
       } else {
         console.log('Something went wrong, no refresh or expiry token.');
       }
     };
   }, []);
 
+  // Sets the user name from either API fetch or from local storage as to not overuse Spotify's API
   useEffect(() => {
     const userObj = localStorage.getItem('userData');
     if (!userObj) {
@@ -39,8 +44,13 @@ const Dashboard = () => {
         setUser(userParse);
       }
     }
-    
   }, []);
+
+  // Logs user out of the dashboard
+  const logout = () => {
+    localStorage.clear();
+    navigate('/');
+  };
 
   return (
     <div id="dashboard">
@@ -51,8 +61,17 @@ const Dashboard = () => {
           />
         </a>
         <h1 id="username">
-          {user.display_name ? user.display_name : "Error retrieving name"}
+          {user.display_name ? user.display_name : "Error: Could not retrieve user information!"}
         </h1>
+
+        <button id="logout-btn"
+          onClick={(e) => {
+           e.preventDefault();
+           logout(); 
+          }}
+        >
+          Logout
+        </button>
       </div>
       <div id="dashboard-bottom">
         <div id="song-artist-nav">
