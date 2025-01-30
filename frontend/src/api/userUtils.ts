@@ -11,7 +11,7 @@ export async function getTopStats(token: string, type: string) {
   const access = `?access=${token}`;
   const typeStr = `type=${type}`;
   const url = '/me/topStats' + access + '&' + typeStr;
-  console.log(url)
   let topInfoData = await apiCallBody('GET', url);
-  return topInfoData.json();
+
+  return topInfoData;
 };

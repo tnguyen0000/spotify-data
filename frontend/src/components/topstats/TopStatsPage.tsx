@@ -18,8 +18,16 @@ const TopStatsPage = () => {
     } else {
       switch (type) {
         case "artists":
-          const i = getTopStats(access, 'artists');
-          console.log(i)
+          // TODO!: Finish this
+          const b =  async () => {
+            const statPromise = getTopStats(access, 'artists');
+            statPromise.then((arr) => {
+              for (const j of arr) {
+                console.log(j['items'])
+              }
+            });
+          }
+          b();
           break;
         case "songs":
           console.log('songs')
@@ -78,7 +86,7 @@ const TopStatsPage = () => {
       </div>
       <div id="items-container">
         {
-          test.map((t) => (
+          test.map((t)  => ( // TODO!: Split this
             <StatCard 
               key = {t.id}
               id = {t.id}

@@ -71,14 +71,14 @@ export async function getUser(access: string) {
 // type should be either 'artists' or 'tracks'
 export async function getTopStats(access: string, type: string) {
   // TODO!: Add mongo integration so dont have to query spotify API several times
-  // 'medium_term', 'long_term'
+  //  ''medium_term', long_term'
   const timeRanges = ['short_term',];
-  const topStats: Promise<any>[] = [];
+  const topStats: Response[] = [];
   const limitStr = 'limit=50';
   for (const timeRange of timeRanges) {
     const timeStr = `time_range=${timeRange}`;
     const urlStr = 'https://api.spotify.com/v1/me/top/' + type + '?' + limitStr + '&' + timeStr;
-    const request = fetch(urlStr, {
+    const request = await fetch(urlStr, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + access
@@ -86,5 +86,6 @@ export async function getTopStats(access: string, type: string) {
     });
     topStats.push(request);
   };
+  console.log(topStats)
   return topStats;
 };

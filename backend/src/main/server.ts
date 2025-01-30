@@ -23,6 +23,7 @@ app.get('/print', (req: Request, res: Response): any => {
   if (req.query.echo === undefined) {
     return res.json('Was undefined');
   }
+  console.log('Test!')
   const data = req.query.echo as string;
   return res.json(data);
 
@@ -80,12 +81,13 @@ app.get('/me', async (req: Request, res: Response): Promise<any> => {
 app.get('/me/topStats', async (req: Request, res: Response): Promise<any> => {
   const access = req.query.access as string;
   const type = req.query.type as string;
+  console.log('hey')
   const topStats = await getTopStats(access, type);
-  Promise.all(topStats).then((v) => {
-    console.log(v)
-  }).then((resolved) => {
-    return res.json(resolved);
-  })
+  const promises = topStats.map((r) => r.json());
+  const resolved = await Promise.all(promises);
+  console.log(resolved)
+    // TODO!: Transform data to my own format
+  return res.json(resolved);
 });
 
 // Starts server
