@@ -1,12 +1,9 @@
 #statspage-container {
   height: 100vh;
   width: 100%;
-  display: flex;
-  justify-content: start;
-  align-items: stretch;
-  flex-direction: column;
   gap: 5px;
   background-color: lightslategrey;
+  border-radius: 10px;
 }
 
 #category-container {
@@ -15,8 +12,8 @@
   align-items: center;
   gap: 2px;
   background-color: #1db954;
-  height: 15vh;
-  border-radius: 10px;
+  height: 10vh;
+  border-radius: 10px 10px 1px 1px;
 }
 
 .category-label {
@@ -29,7 +26,7 @@
   align-items: center;
   background-color: lime;
   height: 80%;
-  width: max(10%, 10vh);
+  width: max(10%, 15vh);
   text-align: center;
   font-size: max(1.5vw, 3vh);
   border-radius: 10px;

@@ -71,7 +71,7 @@ export async function getUser(access: string) {
 // type should be either 'artists' or 'tracks'
 export async function getTopStats(access: string, type: string) {
   // TODO!: Add mongo integration so dont have to query spotify API several times
-  //  ''medium_term', long_term'
+  //  ''medium_term', 'long_term'
   const timeRanges = ['short_term',];
   const topStats: Response[] = [];
   const limitStr = 'limit=50';
@@ -86,6 +86,5 @@ export async function getTopStats(access: string, type: string) {
     });
     topStats.push(request);
   };
-  console.log(topStats)
   return topStats;
 };

@@ -5,10 +5,16 @@ export interface Artist {
   imageUrl: string,
 };
 
+export interface ArtistShort {
+  id: string,
+  name: string,
+  spotifyUrl: string,
+};
+
 export interface StatProps {
   id: string,
   name: string,
-  artists?: Artist[],
+  artists?: ArtistShort[],
   spotifyUrl: string,
   imageUrl: string,
   type: StatType

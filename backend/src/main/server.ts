@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import querystring from 'querystring';
 import cors from 'cors';
 import { getRefresh, getTokens, getUser, getTopStats } from './spotifyAPI';
+import { convertTopStats } from './utils';
 
 dotenv.config();
 
@@ -15,6 +16,8 @@ const CLIENT_ID = process.env.CLIENT_ID;
 const STATE = process.env.STATE;
 const URL = `http://localhost:${PORT}`;
 const REDIRECT = `http://localhost:${PORT_FRONT}/dashboard`;
+
+// TODO: Add mongo integration:  const MONGO = new DatabaseHandler(); 
 
 app.use(cors())
 
@@ -78,15 +81,24 @@ app.get('/me', async (req: Request, res: Response): Promise<any> => {
 });
 
 // Get users top stats
+// Returns array of [{
+// id: string,
+// name: string,
+// spotifyUrl: string,
+// imageUrl: string,
+// artists?: artists[]
+// type: 'track' | 'artist'
+
+// }]
 app.get('/me/topStats', async (req: Request, res: Response): Promise<any> => {
   const access = req.query.access as string;
   const type = req.query.type as string;
-  console.log('hey')
   const topStats = await getTopStats(access, type);
   const promises = topStats.map((r) => r.json());
-  const resolved = await Promise.all(promises);
+  const resolvedPromises = await Promise.all(promises);
+  const resolved = convertTopStats(resolvedPromises);
   console.log(resolved)
-    // TODO!: Transform data to my own format
+  
   return res.json(resolved);
 });
 

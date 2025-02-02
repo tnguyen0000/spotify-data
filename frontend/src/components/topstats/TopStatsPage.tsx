@@ -19,18 +19,27 @@ const TopStatsPage = () => {
       switch (type) {
         case "artists":
           // TODO!: Finish this
-          const b =  async () => {
+          const getArtistStats =  async () => {
             const statPromise = getTopStats(access, 'artists');
             statPromise.then((arr) => {
-              for (const j of arr) {
-                console.log(j['items'])
+              for (const i of arr) {
+                console.log(i)
               }
             });
           }
-          b();
+          getArtistStats();
           break;
         case "songs":
-          console.log('songs')
+          // TODO!: Finish this
+          const getSongStats =  async () => {
+            const statPromise = getTopStats(access, 'tracks');
+            statPromise.then((arr) => {
+              for (const i of arr) {
+                console.log(i)
+              }
+            });
+          }
+          getSongStats();
           break;
         default:
           console.log("TODO!: ERROR CHECK")
@@ -86,7 +95,7 @@ const TopStatsPage = () => {
       </div>
       <div id="items-container">
         {
-          test.map((t)  => ( // TODO!: Split this
+          test.map((t)  => (
             <StatCard 
               key = {t.id}
               id = {t.id}

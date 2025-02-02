@@ -1,0 +1,26 @@
+Types:
+artist = {
+    id: string,
+    name: string,
+    spotifyUrl: string,
+    imageUrl: string,
+}
+
+term = {
+    id: string,
+    name: string,
+    artists?: artist[],
+    spotifyUrl: string,
+    imageUrl: string,
+}
+
+
+Tables:
+topStats = {
+    _id: spotifyUserId,
+    expiry: time_in_seconds,
+    type: "artist" || "track"
+    shortTerm: term[],
+    mediumTerm: term[],
+    longTerm: term[]
+}
