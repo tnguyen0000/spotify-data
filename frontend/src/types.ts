@@ -17,7 +17,4 @@ export interface StatProps {
   artists?: ArtistShort[],
   spotifyUrl: string,
   imageUrl: string,
-  type: StatType
 };
-
-export type StatType = 'artist' | 'track';

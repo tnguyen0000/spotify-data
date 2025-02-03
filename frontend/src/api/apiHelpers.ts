@@ -11,6 +11,6 @@ export const apiCallBody = async (inputMethod: string, path: string, requestBody
     })
     return data.json();
   } catch (error) {
-    return error;
+    throw error;
   }
 };

@@ -53,7 +53,12 @@ export async function getRefresh(refresh: string, redirect: string) {
   return tokens.json();
 };
 
-// Retrieves user data
+/** Retrieves user data
+ * 
+ * @param access - Access token
+ * 
+ * @returns https://developer.spotify.com/documentation/web-api/reference/get-current-users-profile 
+ */
 export async function getUser(access: string) {
   let user = await fetch('https://api.spotify.com/v1/me', {
     method: 'GET',
@@ -67,12 +72,16 @@ export async function getUser(access: string) {
   return user.json();
 };
 
-// Retrieves user data
-// type should be either 'artists' or 'tracks'
+/**
+ * 
+ * @param access - Access token
+ * @param type - 'artists' | 'tracks'
+ * 
+ * @returns Promise form Spotify API
+ */
 export async function getTopStats(access: string, type: string) {
   // TODO!: Add mongo integration so dont have to query spotify API several times
-  //  ''medium_term', 'long_term'
-  const timeRanges = ['short_term',];
+  const timeRanges = ['short_term', 'medium_term', 'long_term'];
   const topStats: Response[] = [];
   const limitStr = 'limit=50';
   for (const timeRange of timeRanges) {

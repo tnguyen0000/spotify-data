@@ -80,16 +80,31 @@ app.get('/me', async (req: Request, res: Response): Promise<any> => {
   });
 });
 
-// Get users top stats
-// Returns array of [{
-// id: string,
-// name: string,
-// spotifyUrl: string,
-// imageUrl: string,
-// artists?: artists[]
-// type: 'track' | 'artist'
+/**
+ * Get users top stats
+ * Returns array which contains either:
+ *
+ *  [
+ *    time_range: 'short_term' | 'medium_term' | 'long_term'
+ *    items: [{
+ *      id: string,
+ *      name: string,
+ *      spotifyUrl: string,
+ *      imageUrl: string,
+ *      artists?: artists[]
+ *      type: 'track' | 'artist'
+ *    }], 
+ *                    OR
+ *    {
+ *      time_range: 'short_term' | 'medium_term' | 'long_term'
+ *      error: {
+ *        status: number,
+ *        message: string,
+ *      }
+ *    }
+ *  ]
+ */
 
-// }]
 app.get('/me/topStats', async (req: Request, res: Response): Promise<any> => {
   const access = req.query.access as string;
   const type = req.query.type as string;
@@ -97,7 +112,6 @@ app.get('/me/topStats', async (req: Request, res: Response): Promise<any> => {
   const promises = topStats.map((r) => r.json());
   const resolvedPromises = await Promise.all(promises);
   const resolved = convertTopStats(resolvedPromises);
-  console.log(resolved)
   
   return res.json(resolved);
 });

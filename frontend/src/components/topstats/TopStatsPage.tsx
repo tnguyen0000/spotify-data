@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 
 import '../styles/userstatspage.css'
-import StatCard from "./StatCard";
 import { getTopStats } from "../../api/userUtils";
 import { useNavigate } from "react-router-dom";
+import StatCardContainer from "./StatCardContainer";
 
 const TopStatsPage = () => {
   const [checked, setChecked] = useState('long_term');
+  const [statData, setStatData] = useState<any>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,25 +19,23 @@ const TopStatsPage = () => {
     } else {
       switch (type) {
         case "artists":
-          // TODO!: Finish this
           const getArtistStats =  async () => {
             const statPromise = getTopStats(access, 'artists');
-            statPromise.then((arr) => {
-              for (const i of arr) {
-                console.log(i)
-              }
+            statPromise.then((stats) => {
+              setStatData(stats)
+            }).catch((err) => {
+              console.log(err);  
             });
           }
           getArtistStats();
           break;
         case "songs":
-          // TODO!: Finish this
           const getSongStats =  async () => {
             const statPromise = getTopStats(access, 'tracks');
-            statPromise.then((arr) => {
-              for (const i of arr) {
-                console.log(i)
-              }
+            statPromise.then((stats) => {
+              setStatData(stats)
+            }).catch((err) => {
+              console.log(err);  
             });
           }
           getSongStats();
@@ -56,19 +55,8 @@ const TopStatsPage = () => {
     }
   }, []);
 
-  useEffect(() => {
-    console.log(checked)
-  }, [checked]);
-
-  const test = Array(50).fill({
-    'id': 'asd',
-    'name': 'thee weekend',
-    'artists': [],
-    'spotifyUrl': 'www.spo',
-    'imageUrl': 'https://cdn.sanity.io/images/7g6d2cj1/production/81b67e7af332ce7e4b971bad24c892a114f06448-1000x667.jpg?h=667&q=70&auto=format',
-    'type': 'track',
-  });
-
+  
+  
   return (
     <div id="statspage-container">
       <div id="category-container">
@@ -93,22 +81,15 @@ const TopStatsPage = () => {
           </span>
         </label>
       </div>
-      <div id="items-container">
-        {
-          test.map((t)  => (
-            <StatCard 
-              key = {t.id}
-              id = {t.id}
-              name = {t.name}
-              artists = {t.artists}
-              spotifyUrl = {t.spotifyUrl}
-              imageUrl = {t.imageUrl}
-              type = 'track'  
-          />
-          ))
-
-        }
-      </div>
+      {
+      statData.map((s: any) => (
+        <StatCardContainer 
+          key = {s.time_range}
+          stat = {s}
+          checked = {checked}
+        />
+      ))
+      }
     </div>
   );
 };

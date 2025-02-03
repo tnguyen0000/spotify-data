@@ -1,4 +1,9 @@
-// Picks the right convert method for the Spotify object
+/** Picks the right convert method for the Spotify object
+ * 
+ * @param obj Should correspond to Spotify API's full artist OR track object 
+ * 
+ * @returns 
+ */
 function convertGeneric(obj: any) {
   switch (obj.type) {
     case "artist":
@@ -11,7 +16,12 @@ function convertGeneric(obj: any) {
   }
 }
 
-// Converts Spotify's full artist object to my format
+/** Converts Spotify's full artist object to my format
+ * 
+ * @param obj Should correspond to Spotify API's full artist object 
+ * 
+ * @returns 
+ */
 function convertArtistLong(obj: any) {
   let image = '';
   if (obj.images.length > 0) {
@@ -25,10 +35,13 @@ function convertArtistLong(obj: any) {
     type: obj.type,
   }
 }
-
-// Converts Spotify's track object to my format
+ 
+/** Converts Spotify's track object to my format
+ * @param obj Should correspond to Spotify API's full track object 
+ * 
+ * @returns 
+ */
 function convertTrack(obj: any) {
-
   let image = '';
   const album = obj.album;
   if (album.images.length > 0) {
@@ -45,7 +58,12 @@ function convertTrack(obj: any) {
   }
 }
 
-// Converts Spotify's short artist object to my format
+/** Converts Spotify's short artist object to my format
+ * 
+ * @param obj Should correspond to Spotify API's shortened artist object 
+ * 
+ * @returns 
+ */
 function convertArtistShort(obj: any) {
   return {
     id: obj.id,
@@ -57,15 +75,25 @@ function convertArtistShort(obj: any) {
 // Converts an array of Spotify Track/Artist objects to an array of my format
 export function convertTopStats(statArr: any[]) {
   const res: any[] = [];
-  for (const obj of statArr) {
+  const timeRanges = ['short_term', 'medium_term', 'long_term'];
+  // timeRanges length and statArr length should correspond with eachother
+  for (let i = 0; i < statArr.length; i++) {
+    const obj = statArr[i];
     if (obj.error) {
-      res.push(obj);
+      const resObj = {
+        time_range: timeRanges[i],
+        error: obj.error
+      }
+      res.push(resObj);
     } else {
       const mapped = obj.items.map((x: any) => convertGeneric(x));
-      res.push(mapped)
+      const resObj = {
+        time_range: timeRanges[i],
+        items: mapped
+      }
+      res.push(resObj)
     }
   }
-
 
   return res;
 }

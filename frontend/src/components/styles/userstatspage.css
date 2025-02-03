@@ -81,10 +81,33 @@ input:checked + span {
   text-overflow: ellipsis;
 }
 
+.card-artists {
+  position: absolute;
+  display: block;
+  margin: 0;
+  width: 95%;
+  bottom: 0;
+  left: 5%;
+  opacity: 0;
+  transition: 1s;
+
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .stat-card:hover img {
   opacity: 50%;
 }
 
 .stat-card:hover .card-name {
   opacity: 1;
+}
+
+.stat-card:hover .card-artists {
+  opacity: 1;
+}
+
+.stat-card a {
+  color: black;
 }
