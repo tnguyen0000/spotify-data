@@ -15,3 +15,12 @@ export async function getTopStats(token: string, type: string) {
   
   return topInfoData;
 };
+
+export async function getPlaylists(token: string, userId: string) {
+  const access = `?access=${token}`;
+  const userIdStr = `userId=${userId}`
+  const url = '/me/listPlaylists' + access + '&' + userIdStr
+  let playlists = await apiCallBody('GET', url);
+  
+  return playlists;
+};

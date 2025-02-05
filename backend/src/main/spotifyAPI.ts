@@ -97,3 +97,27 @@ export async function getTopStats(access: string, type: string) {
   };
   return topStats;
 };
+
+/**
+ * 
+ * @param access - Access token
+ * 
+ * @returns Promise form Spotify API
+ */
+export async function getPlaylists(access: string) {
+  // TODO!: Add mongo integration so dont have to query spotify API several times
+  // TODO?: Maybe add offset for people with more than 50 playlists
+  const limitStr = 'limit=50';
+  const url = 'https://api.spotify.com/v1/me/playlists' + '?' + limitStr
+  const playlists = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + access
+    }
+  });
+  if (!playlists.ok) {
+    console.log(`Failed retrieving playlists request: ${playlists.status} ${playlists.statusText}`);
+    return playlists.json();
+  };
+  return playlists.json();
+};

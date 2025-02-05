@@ -4,8 +4,8 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import querystring from 'querystring';
 import cors from 'cors';
-import { getRefresh, getTokens, getUser, getTopStats } from './spotifyAPI';
-import { convertTopStats } from './utils';
+import { getRefresh, getTokens, getUser, getTopStats, getPlaylists } from './spotifyAPI';
+import { convertTopStats, filterOwnedPlaylist } from './utils';
 
 dotenv.config();
 
@@ -74,6 +74,7 @@ app.get('/me', async (req: Request, res: Response): Promise<any> => {
     return res.json(user)
   }
   return res.json({
+    user_id: user.id,
     display_name: user.display_name,
     images: user.images,
     uri: user.uri,
@@ -114,6 +115,29 @@ app.get('/me/topStats', async (req: Request, res: Response): Promise<any> => {
   const resolved = convertTopStats(resolvedPromises);
   
   return res.json(resolved);
+});
+
+/**
+ * Get list of current user's own playlists
+ * Returns either array of Spotify's SimplifiedPlaylistObject or a Spotify Error object
+ */
+
+app.get('/me/listPlaylists', async (req: Request, res: Response): Promise<any> => {
+  const access = req.query.access as string;
+  const userId = req.query.userId as string;
+  if (!userId) {
+    return res.json({
+      error: 'Invalid userId',
+      error_description: 'User ID provided cannot be recognised'
+    });
+  }
+
+  const playlists = await getPlaylists(access);
+  if (playlists.error) {
+    return res.json(playlists);
+  }
+
+  return res.json(filterOwnedPlaylist(playlists.items, userId));
 });
 
 // Starts server

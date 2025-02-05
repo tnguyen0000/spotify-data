@@ -1,11 +1,11 @@
-import StatCard from "./StatCard";
+import StatCard from './StatCard';
 import '../styles/userstatspage.css'
 
 const StatCardContainer = (props: any) => {
   const {stat, checked} = props;
   return (
-    <div id="items-container"
-      style={{display: stat.time_range === checked ? "grid" : "none"}}
+    <div id='items-container'
+      style={{display: stat.time_range === checked ? 'grid' : 'none'}}
     >
       {
         !stat.error ?

@@ -2,8 +2,8 @@ import { Routes, Route } from 'react-router-dom'
 import Home from './components/Home'
 import Dashboard from './components/Dashboard'
 import './App.css'
-import TopStatsPage from './components/topstats/TopStatsPage'
-import PlaylistPage from './components/PlaylistStatsPage'
+import TopStatsPage from './components/topstatsPage/TopStatsPage'
+import PlaylistPage from './components/playlistPage/PlaylistStatsPage'
 
 function App() {
   return (

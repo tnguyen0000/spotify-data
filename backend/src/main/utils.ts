@@ -22,7 +22,7 @@ function convertGeneric(obj: any) {
  * 
  * @returns 
  */
-function convertArtistLong(obj: any) {
+function convertArtistLong(obj: any): Object {
   let image = '';
   if (obj.images.length > 0) {
     image = obj.images[0].url;
@@ -41,7 +41,7 @@ function convertArtistLong(obj: any) {
  * 
  * @returns 
  */
-function convertTrack(obj: any) {
+function convertTrack(obj: any): Object {
   let image = '';
   const album = obj.album;
   if (album.images.length > 0) {
@@ -64,7 +64,7 @@ function convertTrack(obj: any) {
  * 
  * @returns 
  */
-function convertArtistShort(obj: any) {
+function convertArtistShort(obj: any): Object {
   return {
     id: obj.id,
     name: obj.name,
@@ -72,8 +72,12 @@ function convertArtistShort(obj: any) {
   }
 }
 
-// Converts an array of Spotify Track/Artist objects to an array of my format
-export function convertTopStats(statArr: any[]) {
+/** Converts an array of Spotify Track/Artist objects to an array of my format
+ * @param statArr Array of Spotify API's full artist/track object 
+ * 
+ * @returns Array of my own formated artist/track objects
+ */
+export function convertTopStats(statArr: any[]): any[] {
   const res: any[] = [];
   const timeRanges = ['short_term', 'medium_term', 'long_term'];
   // timeRanges length and statArr length should correspond with eachother
@@ -96,4 +100,14 @@ export function convertTopStats(statArr: any[]) {
   }
 
   return res;
+}
+
+/** Filters an array of Spotify's SimplifiedPlaylistObject so that it returns only Playlists owned/created by current user
+ * @param playlists Array of Spotify API's SimplifiedPlaylistObject 
+ * @param userId Current user's id
+ * 
+ * @returns Filtered array of SimplifiedPlaylistObject
+ */
+export function filterOwnedPlaylist(playlists: any[], userId: string): any[] {
+  return playlists.filter((p) => p.owner.id == userId);
 }

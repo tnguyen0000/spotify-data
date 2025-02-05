@@ -1,10 +1,10 @@
-import { apiCallBody } from "../api/apiHelpers";
+import { apiCallBody } from '../api/apiHelpers';
 
 import './styles/home.css';
 
 const Home = () => {
   return (
-    <div id="home">
+    <div id='home'>
       <h1>
         Home
       </h1>
