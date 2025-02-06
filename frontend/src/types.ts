@@ -27,12 +27,12 @@ export interface PlayListCardProps {
   id: string,
   name: string,
   imageUrl: string,
-  selectedPlaylists: Array<any>,
-  setSelectedPlaylists: Function,
+  selectedPlaylist: string,
+  setSelectedPlaylist: Function,
 };
 
 export interface PlaylistContainerProps {
   playlists: any,
-  selectedPlaylists: Array<any>,
-  setSelectedPlaylists: Function,
+  selectedPlaylist: string,
+  setSelectedPlaylist: Function,
 }

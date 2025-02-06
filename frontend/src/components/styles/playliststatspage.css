@@ -1,5 +1,5 @@
 #playlistpage-container {
-  height: 100vh;
+  height: 100%;
   width: 100%;
   background-color: lightslategrey;
   border-radius: 10px;
@@ -57,4 +57,11 @@ div:last-of-type {
   background-color: #1db954;
   height: 10vh;
   border-radius: 1px 1px 10px 10px;
+}
+
+#confirm-btn {
+  background-color: lime;
+  width: max(15%, 30vh);
+  height: 50%;
+  font-size: max(1.5vw, 3vh);
 }

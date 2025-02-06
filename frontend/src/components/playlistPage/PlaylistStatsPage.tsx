@@ -9,7 +9,7 @@ import PlaylistsContainer from './PlaylistsContainer';
 const PlaylistPage = () => {
   const [option, setOption] = useState('fav_artist');
   const [playlists, setPlaylists] = useState<any>([]);
-  const [selectedPlaylists, setSelectedPlaylists] = useState([]);
+  const [selectedPlaylist, setSelectedPlaylist] = useState<string>('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,11 +39,20 @@ const PlaylistPage = () => {
         />
         <PlaylistsContainer
           playlists={playlists}
-          selectedPlaylists={selectedPlaylists} 
-          setSelectedPlaylists={setSelectedPlaylists}
+          selectedPlaylist={selectedPlaylist} 
+          setSelectedPlaylist={setSelectedPlaylist}
         />
         <div id='confirm-btn-container'>
-          TODO!
+          <button
+            id='confirm-btn'
+            disabled={selectedPlaylist ? false : true}
+            onClick={(b) => {
+              b.preventDefault();
+              // TODO!: Functionality
+            }}
+          >
+            { selectedPlaylist ? 'Get Stats!' : 'Select A Playlist' }
+          </button>
         </div>
     </div>
   );

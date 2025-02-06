@@ -3,18 +3,18 @@ import { PlayListCardProps } from '../../types';
 import '../styles/playliststatspage.css';
 
 const PlaylistCard = (props: PlayListCardProps) => {
-  const {id, name, imageUrl, selectedPlaylists, setSelectedPlaylists} = props;
+  const {id, name, imageUrl, selectedPlaylist, setSelectedPlaylist} = props;
   const [selected, setSelected] = useState(false);
 
   return (
     <div className='stat-card'
       onClick={() => {
-        setSelected(!selected)
-        if (selectedPlaylists.includes(id)) {
-          setSelectedPlaylists(selectedPlaylists.filter((x) => x != id));
-        } else {
-          selectedPlaylists.push(id);
-          setSelectedPlaylists(selectedPlaylists);
+        if (selectedPlaylist == '') {
+          setSelected(!selected);
+          setSelectedPlaylist(id);
+        } else if (selectedPlaylist == id) {
+          setSelected(!selected);
+          setSelectedPlaylist('');
         }
       }}
     >
