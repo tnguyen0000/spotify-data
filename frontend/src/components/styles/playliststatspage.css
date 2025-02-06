@@ -17,6 +17,7 @@ div:last-of-type {
   gap: 1px;
   justify-content: center;
   background-color: lightslategrey;
+  min-height: 250px;
 }
 
 .playlist-card {
