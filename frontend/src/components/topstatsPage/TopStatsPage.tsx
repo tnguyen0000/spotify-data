@@ -18,14 +18,32 @@ const TopStatsPage = () => {
     if (!access) {
       navigate('/');
     } else {
+      const error = {
+        message: 'Failed to fetch',
+        status: 503,
+      };
+      const errorResponse = [
+        {
+          time_range: 'short_term',
+          error,
+        },
+        {
+          time_range: 'medium_term',
+          error,
+        },
+        {
+          time_range: 'long_term',
+          error,
+        },
+      ];
       switch (type) {
         case 'artists':
           const getArtistStats =  async () => {
             const statPromise = getTopStats(access, 'artists');
             statPromise.then((stats) => {
               setStatData(stats)
-            }).catch((err) => {
-              console.log(err);  
+            }).catch(() => {
+              setStatData(errorResponse); 
             });
           }
           getArtistStats();
@@ -35,8 +53,8 @@ const TopStatsPage = () => {
             const statPromise = getTopStats(access, 'tracks');
             statPromise.then((stats) => {
               setStatData(stats)
-            }).catch((err) => {
-              console.log(err);  
+            }).catch(() => {
+              setStatData(errorResponse);
             });
           }
           getSongStats();
@@ -46,6 +64,10 @@ const TopStatsPage = () => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    console.log(123, statData)
+  }, [statData]);
   
   return (
     <div id='statspage-container'>
@@ -53,13 +75,19 @@ const TopStatsPage = () => {
         setOption={setChecked}
       />
       {
-        statData.map((s: any) => (
-          <StatCardContainer 
-            key = {s.time_range}
-            stat = {s}
-            checked = {checked}
-          />
-        ))
+        (() => {
+          if (statData.length > 0) {
+            return statData.map((s: any) => (
+              <StatCardContainer 
+                key = {s.time_range}
+                stat = {s}
+                checked = {checked}
+              />
+            ));
+          } else if (statData.length == 0) {
+            return ('Loading...');
+          }
+        })()
       }
     </div>
   );

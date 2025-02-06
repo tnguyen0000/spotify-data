@@ -20,7 +20,7 @@ const StatCardContainer = (props: any) => {
             /> 
           ))
         :
-          'Error'
+          stat.error.message
       }
     </div>
   )
