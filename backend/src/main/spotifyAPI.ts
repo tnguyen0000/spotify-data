@@ -24,7 +24,7 @@ export async function getTokens(code: string, redirect: string) {
   })
 
   if (!tokens.ok) {
-    console.log(`Failed access request: ${tokens.status} ${tokens.statusText}`)
+    console.error(`Failed access request: ${tokens.status} ${tokens.statusText}`)
   };
 
   return tokens.json();
@@ -48,7 +48,7 @@ export async function getRefresh(refresh: string, redirect: string) {
   })
 
   if (!tokens.ok) {
-    console.log(`Failed refresh request: ${tokens.status} ${tokens.statusText}`)
+    console.error(`Failed refresh request: ${tokens.status} ${tokens.statusText}`)
   };
   return tokens.json();
 };
@@ -67,7 +67,7 @@ export async function getUser(access: string) {
     }
   });
   if (!user.ok) {
-    console.log(`Failed user request: ${user.status} ${user.statusText}`)
+    console.error(`Failed user request: ${user.status} ${user.statusText}`)
   };
   return user.json();
 };
@@ -77,7 +77,7 @@ export async function getUser(access: string) {
  * @param access - Access token
  * @param type - 'artists' | 'tracks'
  * 
- * @returns Promise form Spotify API
+ * @returns Array of Spotify Responses
  */
 export async function getTopStats(access: string, type: string) {
   // TODO!: Add mongo integration so dont have to query spotify API several times
@@ -102,7 +102,7 @@ export async function getTopStats(access: string, type: string) {
  * 
  * @param access - Access token
  * 
- * @returns Promise form Spotify API
+ * @returns Promise from Spotify API which hopefully resolves to list of user's playlists
  */
 export async function getPlaylists(access: string) {
   // TODO!: Add mongo integration so dont have to query spotify API several times
@@ -116,8 +116,57 @@ export async function getPlaylists(access: string) {
     }
   });
   if (!playlists.ok) {
-    console.log(`Failed retrieving playlists request: ${playlists.status} ${playlists.statusText}`);
+    console.error(`Failed retrieving playlists request: ${playlists.status} ${playlists.statusText}`);
     return playlists.json();
   };
   return playlists.json();
+};
+
+/**
+ * 
+ * @param access - Access token
+ * @param playlistId - Id of the user's playlist
+ * 
+ * @returns Array of all tracks from a particular playlist
+ */
+export async function getPlaylistItems(access: string, playlistId: string) {
+  const limit = 50;
+  const limitStr = `limit=${limit}`;
+  const initialUrl = 'https://api.spotify.com/v1/playlists/' + playlistId + '/tracks?' + limitStr
+  const start = await fetch(initialUrl, {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + access
+    }
+  });
+  if (!start.ok) {
+    console.error(`Failed retrieving initial playlist request: ${start.status} ${start.statusText}`);
+    return start.json();
+  };
+
+  const startBody = await start.json();
+  const res: any[] = [startBody]
+
+  let offset = 50;
+  while (offset < startBody.total) {
+    const offsetStr = `offset=${offset}`;
+    const url = 'https://api.spotify.com/v1/playlists/' + playlistId + '/tracks?' + limitStr + '&' + offsetStr;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + access
+      }
+    });
+    if (!response.ok) {
+      console.error(`Failed subsequent playlist request: ${response.status} ${response.statusText}`);
+      return response.json();
+    };
+
+    const responseResolved = await response.json();
+    res.push(responseResolved)
+
+    offset += limit;
+  }
+
+  return res;
 };

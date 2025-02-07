@@ -36,3 +36,8 @@ export interface PlaylistContainerProps {
   selectedPlaylist: string,
   setSelectedPlaylist: Function,
 }
+
+export interface PlaylistStatContainerProps {
+  stats: any,
+  statName: string,
+}

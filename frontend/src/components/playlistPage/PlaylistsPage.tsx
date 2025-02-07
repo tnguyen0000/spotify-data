@@ -6,7 +6,7 @@ import { getPlaylists } from '../../api/userUtils';
 import { useNavigate } from 'react-router-dom';
 import PlaylistsContainer from './PlaylistsContainer';
 
-const PlaylistPage = () => {
+const PlaylistsPage = () => {
   const [option, setOption] = useState('fav_artist');
   const [playlists, setPlaylists] = useState<any>([]);
   const [selectedPlaylist, setSelectedPlaylist] = useState<string>('');
@@ -48,7 +48,8 @@ const PlaylistPage = () => {
             disabled={selectedPlaylist ? false : true}
             onClick={(b) => {
               b.preventDefault();
-              // TODO!: Functionality
+              const navUrl = '/playliststats/stat' + `?playlistId=${selectedPlaylist}` + '&' + `statType=${option}`;
+              navigate(navUrl);
             }}
           >
             { selectedPlaylist ? 'Get Stats!' : 'Select A Playlist' }
@@ -58,4 +59,4 @@ const PlaylistPage = () => {
   );
 };
 
-export default PlaylistPage;
+export default PlaylistsPage;

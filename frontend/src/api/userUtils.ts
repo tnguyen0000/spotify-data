@@ -18,9 +18,19 @@ export async function getTopStats(token: string, type: string) {
 
 export async function getPlaylists(token: string, userId: string) {
   const access = `?access=${token}`;
-  const userIdStr = `userId=${userId}`
-  const url = '/me/listPlaylists' + access + '&' + userIdStr
+  const userIdStr = `userId=${userId}`;
+  const url = '/me/listPlaylists' + access + '&' + userIdStr;
   let playlists = await apiCallBody('GET', url);
   
   return playlists;
+};
+
+export async function getPlaylistStat(token: string, playlistId: string, statType: string) {
+  const access = `?access=${token}`;
+  const playlistIdStr = `playlistId=${playlistId}`;
+  const statTypeStr = `statType=${statType}`;
+  const url = '/me/getPlaylistStat' + access + '&' + playlistIdStr + '&' + statTypeStr;
+  let playlistStat = await apiCallBody('GET', url);
+  
+  return playlistStat;
 };

@@ -3,7 +3,8 @@ import Home from './components/Home'
 import Dashboard from './components/Dashboard'
 import './App.css'
 import TopStatsPage from './components/topstatsPage/TopStatsPage'
-import PlaylistPage from './components/playlistPage/PlaylistStatsPage'
+import PlaylistPage from './components/playlistPage/PlaylistsPage'
+import PlaylistStatPage from './components/playlistPage/PlayListStatPage'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route path='/dashboard' element={<Dashboard />} />
       <Route path='/topstats' element={<TopStatsPage />} />
       <Route path='/playliststats' element={<PlaylistPage />} />
+      <Route path='/playliststats/stat' element={<PlaylistStatPage />} />
      </Routes>
     </div>
   )

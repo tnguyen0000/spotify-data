@@ -4,7 +4,7 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import querystring from 'querystring';
 import cors from 'cors';
-import { getRefresh, getTokens, getUser, getTopStats, getPlaylists } from './spotifyAPI';
+import { getRefresh, getTokens, getUser, getTopStats, getPlaylists, getPlaylistItems } from './spotifyAPI';
 import { convertTopStats, filterOwnedPlaylist } from './utils';
 
 dotenv.config();
@@ -138,6 +138,38 @@ app.get('/me/listPlaylists', async (req: Request, res: Response): Promise<any> =
   }
 
   return res.json(filterOwnedPlaylist(playlists.items, userId));
+});
+
+/**
+ * Get all the tracks and the relevant stats from a given playlist
+ * Returns either array of top 5 relevant stats or a Spotify Error object
+ */
+
+app.get('/me/getPlaylistStat', async (req: Request, res: Response): Promise<any> => {
+  const access = req.query.access as string;
+  const playlistId = req.query.playlistId as string;
+  const statType = req.query.statType as string;
+  if (!playlistId) {
+    return res.json({
+      error: 'No playlist ID provided.',
+      error_description: 'No playlist ID provided'
+    });
+  }
+  const statTypes = ['fav_artist', 'fav_genre', 'fav_year', 'popularity'];
+
+  if (!statType || !statTypes.includes(statType)) {
+    return res.json({
+      error: 'Invalid stat type provided.',
+      error_description: 'Stat type is either empty or does not match one of the provided types.'
+    });
+  }
+
+  const playlistItems = await getPlaylistItems(access, playlistId);
+  if (!playlistItems.length && playlistItems.error) {
+    return res.json(playlistItems);
+  }
+
+  return res.json(playlistItems);
 });
 
 // Starts server
