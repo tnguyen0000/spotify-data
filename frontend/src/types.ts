@@ -41,3 +41,9 @@ export interface PlaylistStatContainerProps {
   stats: any,
   statName: string,
 }
+export interface StatNamesObject {
+  'fav_artist': string,
+  'fav_genre': string,
+  'fav_year': string,
+  'popularity': string
+};

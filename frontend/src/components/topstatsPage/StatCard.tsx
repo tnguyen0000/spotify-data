@@ -15,7 +15,11 @@ const StatCard = (props: StatProps) => {
           {name}
         </h2>
       </a>
-      <a href={artists ? artists[0].spotifyUrl : ''}><h2 className='card-artists'>{artists ? artists[0].name : null}</h2></a>
+      <a href={artists ? artists[0].spotifyUrl : ''}>
+        <h2 className='card-artists'>
+          {artists ? artists[0].name : null}
+        </h2>
+      </a>
     </div>
   );
 };

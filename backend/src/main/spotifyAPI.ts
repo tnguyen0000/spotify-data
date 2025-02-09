@@ -164,7 +164,7 @@ export async function getPlaylistItems(access: string, playlistId: string) {
 
     const responseResolved = await response.json();
     res.push(responseResolved)
-
+  
     offset += limit;
   }
 

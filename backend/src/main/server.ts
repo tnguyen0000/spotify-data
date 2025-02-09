@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import querystring from 'querystring';
 import cors from 'cors';
 import { getRefresh, getTokens, getUser, getTopStats, getPlaylists, getPlaylistItems } from './spotifyAPI';
-import { convertTopStats, filterOwnedPlaylist } from './utils';
+import { convertTopStats, countArtists, filterOwnedPlaylist } from './utils';
 
 dotenv.config();
 
@@ -168,8 +168,26 @@ app.get('/me/getPlaylistStat', async (req: Request, res: Response): Promise<any>
   if (!playlistItems.length && playlistItems.error) {
     return res.json(playlistItems);
   }
-
-  return res.json(playlistItems);
+  
+  let stats = []
+  switch (statType) {
+    case 'fav_artist':
+      stats = countArtists(playlistItems);
+      break;
+    case 'fav_genre':
+      // TODO!
+      break;
+    case 'fav_year':
+      // TODO!
+      break;
+    case 'popularity':
+      // TODO!
+      break;
+    default:
+      break;
+  }
+  
+  return res.json(stats);
 });
 
 // Starts server

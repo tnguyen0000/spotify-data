@@ -17,12 +17,12 @@ const PlaylistStatPage = () => {
     const statType = urlParams.get('statType') as string;
     const access = localStorage.getItem('access_token');
     if (!access || !statType || !playlistId) {
-      navigate('/');
+      navigate('/dashboard');
     } else {
       setStatName(statType);
       const fetchedStats = getPlaylistStat(access, playlistId, statType);
       fetchedStats.then((s) => {
-        setStats(s)
+        setStats(s);
       }).catch(() => {
         setStats({
           error: {

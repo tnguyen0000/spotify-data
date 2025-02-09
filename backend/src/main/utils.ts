@@ -111,3 +111,37 @@ export function convertTopStats(statArr: any[]): any[] {
 export function filterOwnedPlaylist(playlists: any[], userId: string): any[] {
   return playlists.filter((p) => p.owner.id == userId);
 }
+
+/** Given an array of arrays of Spotify's PlaylistTrackObject, will return top 5 found artists. 
+ * @param playlistItems Array of Spotify API's SimplifiedPlaylistObject 
+ * 
+ * @returns an array of objects: 
+ * [{
+ *  id: string
+ *  name: string
+ *  count: number
+ * },]
+ */
+export function countArtists(playlistItems: any[]): any[] {
+  const flattenedItems = playlistItems.flatMap((x) => x.items);
+  const artists = flattenedItems.flatMap((x) => x.track.artists);
+  const artistNameMap: Map<string, string> = new Map();
+  const artistCount: Map<string, number> = new Map();;
+  for (const artist of artists) {
+    artistNameMap.set(artist.id, artist.name);
+    const found = artistCount.get(artist.id);
+    if (found) {
+      artistCount.set(artist.id, found + 1);
+    } else {
+      artistCount.set(artist.id, 1);
+    }
+  }
+  const artistCountArr = Array.from(artistCount);
+  artistCountArr.sort((x, y) => y[1] - x[1]);
+  const topFive = artistCountArr.slice(0, 5);
+  return topFive.map((x) => ({
+    id: x[0],
+    name: artistNameMap.get(x[0]),
+    count: x[1], 
+    }));
+}
