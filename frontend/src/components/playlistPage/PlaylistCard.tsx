@@ -5,7 +5,7 @@ const PlaylistCard = (props: PlayListCardProps) => {
   const {id, name, imageUrl, selectedPlaylist, setSelectedPlaylist} = props;
 
   return (
-    <div className='stat-card'
+    <div className='playlist-card'
       onClick={() => {
         setSelectedPlaylist(id);
       }}

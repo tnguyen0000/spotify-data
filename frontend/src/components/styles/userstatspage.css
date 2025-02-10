@@ -1,8 +1,8 @@
 #statspage-container {
-  height: 100vh;
+  height: 100%;
   width: 100%;
   gap: 5px;
-  background-color: lightslategrey;
+  background-color: #BDBDBD;
   border-radius: 10px;
 }
 
@@ -48,7 +48,7 @@ input:checked + span {
   grid-template-columns: repeat(auto-fit, max(18vw, 15vh));
   gap: 1px;
   justify-content: center;
-  background-color: lightslategrey;
+  background-color: #BDBDBD;
 }
 
 .stat-card {
@@ -59,6 +59,7 @@ input:checked + span {
   display: block;
   border-radius: 1px;
   font-size: max(1.7vw, 1.8vh);
+  border: 1px solid black;
 }
 
 .stat-card img {

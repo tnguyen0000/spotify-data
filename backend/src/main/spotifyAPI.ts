@@ -170,3 +170,36 @@ export async function getPlaylistItems(access: string, playlistId: string) {
 
   return res;
 };
+
+/**
+ * 
+ * @param access - Access token
+ * @param artistIds - Array of artist ids
+ * 
+ * @returns Array of promises that hopefully resolve ArtistObjects
+ */
+export async function getArtistsDetails(access: string, artistIds: any[]) {
+  let curr = 0;
+  let offset = 50;
+  const res: any = [];
+  while (curr < artistIds.length) {
+    const artistIdsStr = `?ids=${artistIds.slice(curr, curr + offset).toString()}`;
+    const url = 'https://api.spotify.com/v1/artists' + artistIdsStr;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + access
+      }
+    });
+    if (!response.ok) {
+      console.error(`Failed fetching artist details: ${response.status} ${response.statusText}`);
+      return response.json();
+    };
+    const responseResolved = await response.json();
+    res.push(responseResolved.artists);
+    curr += offset;
+  }
+
+  
+  return res.flat();
+};

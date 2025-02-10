@@ -65,10 +65,6 @@ const TopStatsPage = () => {
     }
   }, []);
 
-  useEffect(() => {
-    console.log(123, statData)
-  }, [statData]);
-  
   return (
     <div id='statspage-container'>
       <StatOptions

@@ -126,7 +126,7 @@ export function countArtists(playlistItems: any[]): any[] {
   const flattenedItems = playlistItems.flatMap((x) => x.items);
   const artists = flattenedItems.flatMap((x) => x.track.artists);
   const artistNameMap: Map<string, string> = new Map();
-  const artistCount: Map<string, number> = new Map();;
+  const artistCount: Map<string, number> = new Map();
   for (const artist of artists) {
     artistNameMap.set(artist.id, artist.name);
     const found = artistCount.get(artist.id);
@@ -144,4 +144,49 @@ export function countArtists(playlistItems: any[]): any[] {
     name: artistNameMap.get(x[0]),
     count: x[1], 
     }));
+}
+
+/**
+ * 
+ * @param playlistItems Array of Spotify's PlaylistTrackObject
+ * 
+ * @returns Array of artist ids, excludes local files
+ */
+export function getArtistIds(playlistItems: any[]): string[] {
+  const flattenedItems = playlistItems.flatMap((x) => x.items);
+  const filteredItems = flattenedItems.filter((x) => !x.is_local);
+  const artists = filteredItems.flatMap((x) => x.track.artists);
+  const artistIds = artists.map((a) => a.id);
+  return artistIds;
+}
+
+/**
+ * 
+ * @param playlistItems Array of Spotify's ArtistObject
+ * 
+ * @returns an array of objects: 
+ * [{
+ *  genre:
+ *  count: number
+ * },]
+ */
+export function countGenres(artistsDetails: any[]): any[] {
+  const genreCount: Map<string, number> = new Map();
+  for (const artist of artistsDetails) {
+    for (const genre of artist.genres) {
+      const found = genreCount.get(genre);
+      if (found) {
+        genreCount.set(genre, found + 1);
+      } else {
+        genreCount.set(genre, 1);
+      }
+    }
+  }
+  const genreCountArr = Array.from(genreCount);
+  genreCountArr.sort((x, y) => y[1] - x[1]);
+  const topFive = genreCountArr.slice(0, 5);
+  return topFive.map((x) => ({
+    genre: x[0],
+    count: x[1], 
+  }));
 }

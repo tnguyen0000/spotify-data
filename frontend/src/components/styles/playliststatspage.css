@@ -1,10 +1,11 @@
 #playlistpage-container {
   height: 100%;
   width: 100%;
-  background-color: lightslategrey;
+  background-color: #D3D3D3;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
+  gap: 1px;
 }
 
 div:last-of-type {
@@ -16,18 +17,18 @@ div:last-of-type {
   grid-template-columns: repeat(auto-fit, max(18vw, 15vh));
   gap: 1px;
   justify-content: center;
-  background-color: lightslategrey;
+  background-color: #BDBDBD;
   min-height: 250px;
 }
 
 .playlist-card {
   position: relative;
   overflow: hidden;
-  background-color: lightgray;
   aspect-ratio: 1 / 1;
   display: block;
   border-radius: 1px;
   font-size: max(1.7vw, 1.8vh);
+  border: 1px solid black;
 }
 
 .playlist-card img {
@@ -85,8 +86,10 @@ div:last-of-type {
 
 #stat-container li {
   list-style-type: none;
+  border-bottom: 1px dotted black;
+  margin: 10px 0;
 }
 
 .emphasis-name {
-  color: lightgreen;
+  color: blue;
 }
