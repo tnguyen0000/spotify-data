@@ -127,7 +127,7 @@ export async function getPlaylists(access: string) {
  * @param access - Access token
  * @param playlistId - Id of the user's playlist
  * 
- * @returns Array of all tracks from a particular playlist
+ * @returns Array of Spotify's PlaylistTrackObject from a particular playlist
  */
 export async function getPlaylistItems(access: string, playlistId: string) {
   const limit = 50;

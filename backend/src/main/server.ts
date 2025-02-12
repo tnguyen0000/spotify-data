@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import querystring from 'querystring';
 import cors from 'cors';
 import { getRefresh, getTokens, getUser, getTopStats, getPlaylists, getPlaylistItems, getArtistsDetails } from './spotifyAPI';
-import { convertTopStats, countArtists, countGenres, filterOwnedPlaylist, getArtistIds } from './utils';
+import { convertTopStats, countArtists, countGenres, filterOwnedPlaylist, getArtistIds, getPopularSongs, getReleaseYears } from './utils';
 
 dotenv.config();
 
@@ -180,10 +180,10 @@ app.get('/me/getPlaylistStat', async (req: Request, res: Response): Promise<any>
       stats = countGenres(artistDetails);
       break;
     case 'fav_year':
-      // TODO!
+      stats = getReleaseYears(playlistItems);
       break;
     case 'popularity':
-      // TODO!
+      stats = getPopularSongs(playlistItems);
       break;
     default:
       break;

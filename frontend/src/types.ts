@@ -29,17 +29,20 @@ export interface PlayListCardProps {
   imageUrl: string,
   selectedPlaylist: string,
   setSelectedPlaylist: Function,
+  setSelectedPlaylistName: Function,
 };
 
 export interface PlaylistContainerProps {
   playlists: any,
   selectedPlaylist: string,
   setSelectedPlaylist: Function,
+  setSelectedPlaylistName: Function,
 }
 
 export interface PlaylistStatContainerProps {
   stats: any,
   statName: string,
+  playlistName: string
 }
 export interface StatNamesObject {
   'fav_artist': string,

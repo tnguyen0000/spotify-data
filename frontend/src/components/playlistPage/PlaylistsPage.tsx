@@ -10,6 +10,7 @@ const PlaylistsPage = () => {
   const [option, setOption] = useState('fav_artist');
   const [playlists, setPlaylists] = useState<any>([]);
   const [selectedPlaylist, setSelectedPlaylist] = useState<string>('');
+  const [selectedPlaylistName, setSelectedPlaylistName] = useState<string>('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,6 +42,7 @@ const PlaylistsPage = () => {
           playlists={playlists}
           selectedPlaylist={selectedPlaylist} 
           setSelectedPlaylist={setSelectedPlaylist}
+          setSelectedPlaylistName={setSelectedPlaylistName}
         />
         <div id='confirm-btn-container'>
           <button
@@ -48,7 +50,7 @@ const PlaylistsPage = () => {
             disabled={selectedPlaylist ? false : true}
             onClick={(b) => {
               b.preventDefault();
-              const navUrl = '/playliststats/stat' + `?playlistId=${selectedPlaylist}` + '&' + `statType=${option}`;
+              const navUrl = '/playliststats/stat' + `?playlistId=${selectedPlaylist}` + '&' + `statType=${option}` + '&' +  `playlistName=${selectedPlaylistName}`;
               navigate(navUrl);
             }}
           >

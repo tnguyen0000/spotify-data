@@ -190,3 +190,59 @@ export function countGenres(artistsDetails: any[]): any[] {
     count: x[1], 
   }));
 }
+
+/** Given an array of arrays of Spotify's PlaylistTrackObject, will return top 5 released years in playlist. 
+ * @param playlistItems Array of Spotify API's SimplifiedPlaylistObject 
+ * 
+ * @returns an array of objects: 
+ * [{
+ *  year: integer
+ *  count: number
+ * },]
+ */
+export function getReleaseYears(playlistItems: any[]): any[] {
+  const flattenedItems = playlistItems.flatMap((x) => x.items);
+  const albums = flattenedItems.map((x) => x.track.album);
+
+  const yearCount: Map<number, number> = new Map();
+  for (const album of albums) {
+    const release: string = album.release_date;
+    const date: Date = new Date(Date.parse(release));
+    const year: number = date.getFullYear();
+    const found = yearCount.get(year);
+    if (found) {
+      yearCount.set(year, found + 1);
+    } else {
+      yearCount.set(year, 1);
+    }
+  }
+
+  const yearCountArr = Array.from(yearCount);
+  yearCountArr.sort((x, y) => y[1] - x[1]);
+  const topFive = yearCountArr.slice(0, 5);
+  return topFive.map((x) => ({
+    year: x[0],
+    count: x[1], 
+  }));
+}
+
+/** Given an array of arrays of Spotify's PlaylistTrackObject, will return top 10 most popular songs in playlist. 
+ * @param playlistItems Array of Spotify API's SimplifiedPlaylistObject 
+ * 
+ * @returns an array of objects: 
+ * [{
+ *  name: string
+ *  popularity: number
+ * },]
+ */
+export function getPopularSongs(playlistItems: any[]): any[] {
+  const flattenedItems = playlistItems.flatMap((x) => x.items);
+  const tracks = flattenedItems.map((x) => x.track);
+
+  tracks.sort((x: any, y: any) => y.popularity - x.popularity);
+  const topTen = tracks.slice(0, 10);
+  return topTen.map((x: any) => ({
+    name: x.name,
+    popularity: x.popularity, 
+  }));
+}

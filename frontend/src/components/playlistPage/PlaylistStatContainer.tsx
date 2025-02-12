@@ -4,7 +4,7 @@ import { PlaylistStatContainerProps, StatNamesObject } from '../../types';
 import PlaylistStatList from './PlaylistStatList';
 
 const PlaylistStatContainer = (props: PlaylistStatContainerProps) => {
-  const {stats, statName} = props;
+  const {stats, statName, playlistName} = props;
   const statNameObj: StatNamesObject = {
     'fav_artist': 'Favourite Artists',
     'fav_genre': 'Favourite Genres',
@@ -21,11 +21,12 @@ const PlaylistStatContainer = (props: PlaylistStatContainerProps) => {
             return (
             <>
               <div id='statlist-title'>
-                {`Your Top 5 ${statNameString} on TODO!`}
+                <h3>Your Top {stats.length} <span className='emphasis-heading'>{statNameString}</span> on <span className='emphasis-heading'>{playlistName}</span>!</h3>
               </div>
               <PlaylistStatList
                 stats={stats}
                 statName={statName}
+                playlistName={playlistName}
               />
             </>
             );

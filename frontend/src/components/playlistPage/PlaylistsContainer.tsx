@@ -3,7 +3,7 @@ import PlaylistCard from './PlaylistCard';
 import { PlaylistContainerProps } from '../../types';
 
 const PlaylistsContainer = (props: PlaylistContainerProps) => {
-  const {playlists, selectedPlaylist, setSelectedPlaylist} = props;
+  const {playlists, selectedPlaylist, setSelectedPlaylist, setSelectedPlaylistName} = props;
   
   return (
     <div id='playlists-container'>
@@ -18,6 +18,7 @@ const PlaylistsContainer = (props: PlaylistContainerProps) => {
                 imageUrl={p.images.length > 0 ? p.images[0].url : ''}
                 selectedPlaylist={selectedPlaylist}
                 setSelectedPlaylist={setSelectedPlaylist}
+                setSelectedPlaylistName={setSelectedPlaylistName}
               />
             ));
           } else if (playlists.length == 0) {

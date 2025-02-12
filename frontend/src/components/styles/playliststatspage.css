@@ -93,3 +93,6 @@ div:last-of-type {
 .emphasis-name {
   color: blue;
 }
+.emphasis-heading {
+  color: #008aff;
+}
