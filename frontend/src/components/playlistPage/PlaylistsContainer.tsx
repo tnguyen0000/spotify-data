@@ -15,7 +15,7 @@ const PlaylistsContainer = (props: PlaylistContainerProps) => {
                 key={p.id}
                 id={p.id}
                 name={p.name}
-                imageUrl={p.images.length > 0 ? p.images[0].url : ''}
+                imageUrl={p.images ? p.images[0].url : ''}
                 selectedPlaylist={selectedPlaylist}
                 setSelectedPlaylist={setSelectedPlaylist}
                 setSelectedPlaylistName={setSelectedPlaylistName}
