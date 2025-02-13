@@ -1,26 +1,56 @@
 Types:
-artist = {
+Artist = {
     id: string,
     name: string,
     spotifyUrl: string,
     imageUrl: string,
 }
 
-term = {
+Term = {
     id: string,
     name: string,
-    artists?: artist[],
+    artists?: Artist[],
     spotifyUrl: string,
     imageUrl: string,
 }
 
+PlaylistStat = {
+    stats [
+        id?: string,
+        name?: string,
+        year?: int,
+        genre?: string,
+        count?: int,
+        popularity?: int,
+    ]
+}
 
-Tables:
-topStats = {
-    _id: spotifyUserId,
+
+Collections:
+topStatsArtist = {
+    _id: string, # spotifyUserId
     expiry: time_in_seconds,
-    type: "artist" || "track"
-    shortTerm: term[],
-    mediumTerm: term[],
-    longTerm: term[]
+    type: "artist",
+    shortTerm: Term[],
+    mediumTerm: Term[],
+    longTerm: Term[]
+}
+topStatsTrack = {
+    _id: string, # spotifyUserId
+    expiry: time_in_seconds,
+    type: "track",
+    shortTerm: Term[],
+    mediumTerm: Term[],
+    longTerm: Term[]
+}
+
+playListStats = {
+    _id: string, # Spotify playlist ID
+    expiry: time_in_seconds,
+    stats: {
+        fav_artist?: PlaylistStat[], 
+        fav_genre?: PlaylistStat[], 
+        fav_year?: PlaylistStat[], 
+        popularity?: PlaylistStat[], 
+    }
 }

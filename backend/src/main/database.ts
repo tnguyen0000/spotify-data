@@ -5,7 +5,7 @@ dotenv.config();
 
 const MONGO_DB = process.env.MONGO_DB;
 
-const connectionUrl = `mongodb://localhost:27017/`;
+const connectionUrl = `mongodb://mongodb:27017/`;
 
 class DatabaseHandler {
   public client: MongoClient;
@@ -17,11 +17,24 @@ class DatabaseHandler {
 
   async #connect() {
     try {
-      this.client = await MongoClient.connect(connectionUrl);
-      console.log(this.client);
+      const options = {
+        serverSelectionTimeoutMS: 10000,
+      }
+      this.client = await MongoClient.connect(connectionUrl, options);
       this.client.db(MONGO_DB);
+      
     } catch (err) {
-      console.error(err);
+      console.error('Could not connect to MongoDB' + err);
+    }
+  }
+
+  async retrieveTopStats(type: string) {
+    if (type === 'artist') {
+
+    } else if (type === 'track') {
+
+    } else {
+      return {};
     }
   }
 

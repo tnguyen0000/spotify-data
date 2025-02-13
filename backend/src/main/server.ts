@@ -6,6 +6,7 @@ import querystring from 'querystring';
 import cors from 'cors';
 import { getRefresh, getTokens, getUser, getTopStats, getPlaylists, getPlaylistItems, getArtistsDetails } from './spotifyAPI';
 import { convertTopStats, countArtists, countGenres, filterOwnedPlaylist, getArtistIds, getPopularSongs, getReleaseYears } from './utils';
+import DatabaseHandler from './database';
 
 dotenv.config();
 
@@ -17,7 +18,7 @@ const STATE = process.env.STATE;
 const URL = `http://localhost:${PORT}`;
 const REDIRECT = `http://localhost:${PORT_FRONT}/dashboard`;
 
-// TODO: Add mongo integration:  const MONGO = new DatabaseHandler(); 
+const MONGO = new DatabaseHandler(); 
 
 app.use(cors())
 
@@ -121,7 +122,6 @@ app.get('/me/topStats', async (req: Request, res: Response): Promise<any> => {
  * Get list of current user's own playlists
  * Returns either array of Spotify's SimplifiedPlaylistObject or a Spotify Error object
  */
-
 app.get('/me/listPlaylists', async (req: Request, res: Response): Promise<any> => {
   const access = req.query.access as string;
   const userId = req.query.userId as string;
@@ -142,9 +142,8 @@ app.get('/me/listPlaylists', async (req: Request, res: Response): Promise<any> =
 
 /**
  * Get all the tracks and the relevant stats from a given playlist
- * Returns either array of top 5 relevant stats or a Spotify Error object
+ * Returns either array of top X relevant stats or a Spotify Error object
  */
-
 app.get('/me/getPlaylistStat', async (req: Request, res: Response): Promise<any> => {
   const access = req.query.access as string;
   const playlistId = req.query.playlistId as string;
