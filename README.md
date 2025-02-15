@@ -11,6 +11,8 @@ SECRET_ID=*SPOTIFY APP SECRET ID*
 STATE=*ANY STRING*
 
 MONGO_DB=*NAME OF YOUR MONGODB DB* # This is an optional field
+
+SALT_PATTERN=*STRING OR INT*
 ```
 
 The frontend .env file should contain:

@@ -110,11 +110,23 @@ app.get('/me', async (req: Request, res: Response): Promise<any> => {
 app.get('/me/topStats', async (req: Request, res: Response): Promise<any> => {
   const access = req.query.access as string;
   const type = req.query.type as string;
+  try {
+    const result = await MONGO.retrieveTopStats(access, type);
+    return result;
+  } catch (err) {
+    console.error('MongoDB Error:', err);
+  }
   const topStats = await getTopStats(access, type);
   const promises = topStats.map((r) => r.json());
   const resolvedPromises = await Promise.all(promises);
   const resolved = convertTopStats(resolvedPromises);
-  
+
+  try {
+    MONGO.insertTopStats(access, type, resolved);
+  } catch (err) {
+    console.error('MongoDB Error:', err);
+  }
+
   return res.json(resolved);
 });
 
@@ -198,5 +210,6 @@ const server = app.listen(PORT, () => {
 
 // 
 process.on('SIGINT', () => {
+  MONGO.close();
   server.close(() => console.log(`Closed server at ${URL}`));
 });

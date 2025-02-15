@@ -27,21 +27,17 @@ PlaylistStat = {
 
 
 Collections:
-topStatsArtist = {
+topStats = {
     _id: string, # spotifyUserId
     expiry: time_in_seconds,
-    type: "artist",
-    shortTerm: Term[],
-    mediumTerm: Term[],
-    longTerm: Term[]
-}
-topStatsTrack = {
-    _id: string, # spotifyUserId
-    expiry: time_in_seconds,
-    type: "track",
-    shortTerm: Term[],
-    mediumTerm: Term[],
-    longTerm: Term[]
+    artist?: [
+        time_range: string of 'short_term', 'medium_term' or 'long_term',
+        items: Term[]
+    ],
+    track?: {
+        time_range: string of 'short_term', 'medium_term' or 'long_term',
+        items: Term[]
+    },
 }
 
 playListStats = {
