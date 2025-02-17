@@ -110,9 +110,10 @@ app.get('/me', async (req: Request, res: Response): Promise<any> => {
 app.get('/me/topStats', async (req: Request, res: Response): Promise<any> => {
   const access = req.query.access as string;
   const type = req.query.type as string;
+  
   try {
     const result = await MONGO.retrieveTopStats(access, type);
-    return result;
+    return res.json(result);
   } catch (err) {
     console.error('MongoDB Error:', err);
   }

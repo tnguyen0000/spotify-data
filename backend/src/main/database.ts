@@ -13,9 +13,12 @@ const OPTIONS = {
 };
 
 const TOPSTATS_COLL: string = 'topStats';
-const PLAYLISTSTATS_COLL: string = 'playListStats';
+const PLAYLISTSTATS_COLL: string = 'playlistStats';
 const EXPIRE_TIME: number = 600; // 10 mins
 
+// Basic encryption
+// Although tokens should only exist in MongoDB for 10 mins and data inside isn't sensitive, would minimise risk of someone stealing access tokens from the database.
+// Just in case even if stealing the tokens would provide no avenue of attack as the app's scope only allows retrieving music information from the Spotify API.
 function getCrypt(id: String): String {
   const key = crpyto.scryptSync(id as BinaryType, SALT as BinaryType, 20).toString('hex');
 
@@ -36,9 +39,17 @@ class DatabaseHandler {
         serverSelectionTimeoutMS: 10000,
       }
       this.client = await MongoClient.connect(connectionUrl, options);
-      this.client.db(MONGO_DB);
+      this.db = this.client.db(MONGO_DB);
       this.db.createCollection(TOPSTATS_COLL);
       this.db.createCollection(PLAYLISTSTATS_COLL);
+      const TTLIndex = {
+        'createdAt': 1
+      };
+      const TTLValue = {
+        expireAfterSeconds: EXPIRE_TIME
+      };
+      this.db.collection(TOPSTATS_COLL).createIndex(TTLIndex, TTLValue);
+      this.db.collection(PLAYLISTSTATS_COLL).createIndex(TTLIndex, TTLValue);
       
     } catch (err) {
       console.error('Could not connect to MongoDB' + err);
@@ -84,36 +95,33 @@ class DatabaseHandler {
       }
       let coll = this.db.collection(TOPSTATS_COLL);
       const realId = getCrypt(id);
-      if (coll == undefined) {
-        const ins: any = {
-          id_: realId,
-          createdAt: EXPIRE_TIME,
-        }
-        ins[type] = stats;
-        this.db.collection(TOPSTATS_COLL).insertOne(ins);
-        this.db.collection(TOPSTATS_COLL).createIndex(
-          {
-            'createdAt': 1
-          },
-          {
-            expireAfterSeconds: EXPIRE_TIME
-          }
-        );
-      } else {
-        const query: any = {
-          _id: realId
-        }
-        const setObj: any = {};
-        setObj[type] = stats;
-        const update = {
-          $set: setObj
-        }
-        coll.findOneAndUpdate(
-          query,
-          update,
-          OPTIONS
-        );
+      const query: any = {
+        _id: realId
       }
+      const found = coll.findOne(query);
+      found.then((f) => {
+        if (f == null) {
+          // Creates the initial document
+          const ins: any = {
+            _id: realId,
+            createdAt: (new Date).getTime(),
+          }
+          ins[type] = stats;
+          this.db.collection(TOPSTATS_COLL).insertOne(ins);
+        } else {
+          // Updates existing document to include the missing field. E.g. if document had artists, this will add the tracks property and vice versa.
+          const setObj: any = {};
+          setObj[type] = stats;
+          const update = {
+            $set: setObj
+          }
+          coll.updateOne(
+            query,
+            update,
+            OPTIONS
+          );
+        }
+      });
     } catch (err) {
       console.error('MongoDB Error:', err);
       throw new Error('Failed to insert top stats:\n->\t' + err);
