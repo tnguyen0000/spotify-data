@@ -104,7 +104,7 @@ class DatabaseHandler {
           // Creates the initial document
           const ins: any = {
             _id: realId,
-            createdAt: (new Date).getTime(),
+            createdAt: new Date(),
           }
           ins[type] = stats;
           this.db.collection(TOPSTATS_COLL).insertOne(ins);
