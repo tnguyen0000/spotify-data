@@ -29,7 +29,7 @@ PlaylistStat = {
 Collections:
 topStats = {
     _id: string, # spotifyUserId
-    expiry: time_in_seconds,
+    createdAt: Date,
     artist?: [
         time_range: string of 'short_term', 'medium_term' or 'long_term',
         items: Term[]
@@ -42,7 +42,7 @@ topStats = {
 
 playListStats = {
     _id: string, # Spotify playlist ID
-    expiry: time_in_seconds,
+    createdAt: Date,
     stats: {
         fav_artist?: PlaylistStat[], 
         fav_genre?: PlaylistStat[], 

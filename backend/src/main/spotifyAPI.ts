@@ -80,7 +80,6 @@ export async function getUser(access: string) {
  * @returns Array of Spotify Responses
  */
 export async function getTopStats(access: string, type: string) {
-  // TODO!: Add mongo integration so dont have to query spotify API several times
   const timeRanges = ['short_term', 'medium_term', 'long_term'];
   const topStats: Response[] = [];
   const limitStr = 'limit=50';
@@ -105,7 +104,6 @@ export async function getTopStats(access: string, type: string) {
  * @returns Promise from Spotify API which hopefully resolves to list of user's playlists
  */
 export async function getPlaylists(access: string) {
-  // TODO!: Add mongo integration so dont have to query spotify API several times
   // TODO?: Maybe add offset for people with more than 50 playlists
   const limitStr = 'limit=50';
   const url = 'https://api.spotify.com/v1/me/playlists' + '?' + limitStr

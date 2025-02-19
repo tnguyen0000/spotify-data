@@ -64,6 +64,7 @@ class DatabaseHandler {
     }
   }
 
+  // Retrieve from collection that contains user's top stats
   public async retrieveTopStats(id: string, type: string) {
     try {
       if (type !== 'artists' && type !== 'tracks') {
@@ -88,6 +89,7 @@ class DatabaseHandler {
     }
   }
 
+  // Inserts into collection that contains user's top stats
   public insertTopStats(id: string, type: string, stats: any) {
     try {
       if (type !== 'artists' && type !== 'tracks') {
@@ -107,7 +109,7 @@ class DatabaseHandler {
             createdAt: new Date(),
           }
           ins[type] = stats;
-          this.db.collection(TOPSTATS_COLL).insertOne(ins);
+          coll.insertOne(ins);
         } else {
           // Updates existing document to include the missing field. E.g. if document had artists, this will add the tracks property and vice versa.
           const setObj: any = {};
@@ -127,6 +129,70 @@ class DatabaseHandler {
       throw new Error('Failed to insert top stats:\n->\t' + err);
     }
   }
+
+  // Retrieve from collection that contains user's playlist stats
+  public async retrievePlaylistStats(id: string, type: string) {
+    try {
+      const coll = this.db.collection(PLAYLISTSTATS_COLL);
+      const realId = getCrypt(id);
+      const query: any = {
+        _id: realId
+      }
+      const found = await coll.findOne(query);
+      if (found == null) {
+        throw new Error('No such playlist on MongoDB found');
+      }
+      if (found.stats[type]) {
+        return found.stats[type];
+      } else {
+        throw new Error(`'${type}' stat not added to playlist stats cache yet`);
+      }
+    } catch (err) {
+      throw new Error('Failed to retrieve playlist stats:\n->\t' + err);
+    }
+  }
+
+    // Inserts into collection that contains user's top stats
+    public insertPlaylistStats(id: string, type: string, stats: any) {
+      try {
+        const statTypes = ['fav_artist', 'fav_genre', 'fav_year', 'popularity'];
+
+        if (!type || !statTypes.includes(type)) {
+          throw new Error(`'${type}' is not a recognised stat type.`);
+        }
+        let coll = this.db.collection(PLAYLISTSTATS_COLL);
+        const realId = getCrypt(id);
+        const query: any = {
+          _id: realId
+        }
+        const found = coll.findOne(query);
+        found.then((f) => {
+          if (f == null) {
+            // Creates the initial document
+            const ins: any = {
+              _id: realId,
+              createdAt: new Date(),
+              stats: {}
+            }
+            ins.stats[type] = stats;
+            coll.insertOne(ins);
+          } else {
+            // Updates existing document to include the missing field.
+            const update = {
+              $set: { [`stats.${type}`]: stats }
+            }
+            coll.updateOne(
+              query,
+              update,
+              OPTIONS
+            );
+          }
+        });
+      } catch (err) {
+        console.error('MongoDB Error:', err);
+        throw new Error('Failed to insert playlist stat:\n->\t' + err);
+      }
+    }
 };
 
 export default DatabaseHandler;

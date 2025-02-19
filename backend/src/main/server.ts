@@ -176,6 +176,13 @@ app.get('/me/getPlaylistStat', async (req: Request, res: Response): Promise<any>
     });
   }
 
+  try {
+    const result = await MONGO.retrievePlaylistStats(playlistId, statType);
+    return res.json(result);
+  } catch (err) {
+    console.error('MongoDB Error:', err);
+  }
+
   const playlistItems = await getPlaylistItems(access, playlistId);
   if (!playlistItems.length && playlistItems.error) {
     return res.json(playlistItems);
@@ -188,7 +195,13 @@ app.get('/me/getPlaylistStat', async (req: Request, res: Response): Promise<any>
       break;
     case 'fav_genre':
       const artistIds = getArtistIds(playlistItems);
+      // TODO?: This step could be made for efficient by only querying unique artist ids and then looping through the playlist items
+      // rather than getting all artists (including duplicates) and then querying them from Spotify API.
+      // As most time spent loading is from querying the data rather than the processing.
       const artistDetails = await getArtistsDetails(access, artistIds);
+      if (artistDetails.error) {
+        return res.json(artistDetails);
+      }
       stats = countGenres(artistDetails);
       break;
     case 'fav_year':
@@ -199,6 +212,12 @@ app.get('/me/getPlaylistStat', async (req: Request, res: Response): Promise<any>
       break;
     default:
       break;
+  }
+
+  try {
+    MONGO.insertPlaylistStats(playlistId, statType, stats);
+  } catch (err) {
+    console.error('MongoDB Error:', err);
   }
   
   return res.json(stats);
