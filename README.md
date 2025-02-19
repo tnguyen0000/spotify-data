@@ -1,4 +1,6 @@
-To run, you will need 2 '.env' files, one in the './backend' and the other in './frontend'.
+To run, simply use Docker with 'docker compose up --build' in the root directory.
+
+You will need 2 '.env' files, one in the './backend' and the other in './frontend'.
 
 The backend .env file should contain:
 ```
