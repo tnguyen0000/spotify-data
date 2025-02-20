@@ -112,17 +112,19 @@ export function filterOwnedPlaylist(playlists: any[], userId: string): any[] {
   return playlists.filter((p) => p.owner.id == userId);
 }
 
-/** Given an array of arrays of Spotify's PlaylistTrackObject, will return top 5 found artists. 
+/** Given an array of arrays of Spotify's PlaylistTrackObject, will return total count of each artist. 
  * @param playlistItems Array of Spotify API's SimplifiedPlaylistObject 
  * 
- * @returns an array of objects: 
+ * @returns an array of tuple: 
  * [{
  *  id: string
- *  name: string
  *  count: number
  * },]
+ *      and
+ * Map<string, string> of artist id to artist name
+ * 
  */
-export function countArtists(playlistItems: any[]): any[] {
+function countArtists(playlistItems: any[]): [[string, number][], Map<string, string>] {
   const flattenedItems = playlistItems.flatMap((x) => x.items);
   const artists = flattenedItems.flatMap((x) => x.track.artists);
   const artistNameMap: Map<string, string> = new Map();
@@ -137,6 +139,21 @@ export function countArtists(playlistItems: any[]): any[] {
     }
   }
   const artistCountArr = Array.from(artistCount);
+  return [artistCountArr, artistNameMap];
+}
+
+/** Given an array of arrays of Spotify's PlaylistTrackObject, will return top 5 found artists. 
+ * @param playlistItems Array of Spotify API's SimplifiedPlaylistObject 
+ * 
+ * @returns an array of objects: 
+ * [{
+ *  id: string
+ *  name: string
+ *  count: number
+ * },]
+ */
+export function getTopArtists(playlistItems: any[]): any[] {
+  const [artistCountArr, artistNameMap] = countArtists(playlistItems);
   artistCountArr.sort((x, y) => y[1] - x[1]);
   const topFive = artistCountArr.slice(0, 5);
   return topFive.map((x) => ({
@@ -157,31 +174,38 @@ export function getArtistIds(playlistItems: any[]): string[] {
   const filteredItems = flattenedItems.filter((x) => !x.is_local);
   const artists = filteredItems.flatMap((x) => x.track.artists);
   const artistIds = artists.map((a) => a.id);
-  return artistIds;
+  const uniqueArtistIds = new Set(artistIds);
+  return [...uniqueArtistIds];
 }
 
 /**
- * 
- * @param playlistItems Array of Spotify's ArtistObject
+ * @param playlistItems Array of Spotify's PlaylistTrackObject
+ * @param artistGenres Array of Spotify's ArtistObject
  * 
  * @returns an array of objects: 
  * [{
- *  genre:
+ *  genre: string
  *  count: number
  * },]
  */
-export function countGenres(artistsDetails: any[]): any[] {
-  const genreCount: Map<string, number> = new Map();
-  for (const artist of artistsDetails) {
-    for (const genre of artist.genres) {
-      const found = genreCount.get(genre);
-      if (found) {
-        genreCount.set(genre, found + 1);
-      } else {
-        genreCount.set(genre, 1);
+export function countGenres(playlistItems: any[], artistGenres: Map<string, string[]>): any[] {
+  const [artistCountArr, _] = countArtists(playlistItems);
+  const genreCount = artistCountArr.reduce((acc: Map<string, number>, [id, count]: [string, number]) => {
+    const artist = artistGenres.get(id);
+    if (artist) {
+      for (const genre of artist) {
+        const found = acc.get(genre);
+        if (found) {
+          acc.set(genre, found + count);
+        } else {
+          acc.set(genre, count);
+        }
       }
     }
-  }
+    return acc;
+  }, new Map());
+
+
   const genreCountArr = Array.from(genreCount);
   genreCountArr.sort((x, y) => y[1] - x[1]);
   const topFive = genreCountArr.slice(0, 5);

@@ -176,10 +176,10 @@ export async function getPlaylistItems(access: string, playlistId: string) {
  * 
  * @returns Array of promises that hopefully resolve ArtistObjects
  */
-export async function getArtistsDetails(access: string, artistIds: any[]) {
+export async function getArtistsDetails(access: string, artistIds: string[]) {
   let curr = 0;
   let offset = 50;
-  const res: any = [];
+  const res: Map<string, string[]> = new Map();
   while (curr < artistIds.length) {
     const artistIdsStr = `?ids=${artistIds.slice(curr, curr + offset).toString()}`;
     const url = 'https://api.spotify.com/v1/artists' + artistIdsStr;
@@ -194,10 +194,12 @@ export async function getArtistsDetails(access: string, artistIds: any[]) {
       return response.json();
     };
     const responseResolved = await response.json();
-    res.push(responseResolved.artists);
+    responseResolved.artists.map((a: any) => {
+      res.set(a.id, a.genres);
+    });
     curr += offset;
   }
 
   
-  return res.flat();
+  return res;
 };

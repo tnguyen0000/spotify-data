@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import querystring from 'querystring';
 import cors from 'cors';
 import { getRefresh, getTokens, getUser, getTopStats, getPlaylists, getPlaylistItems, getArtistsDetails } from './spotifyAPI';
-import { convertTopStats, countArtists, countGenres, filterOwnedPlaylist, getArtistIds, getPopularSongs, getReleaseYears } from './utils';
+import { convertTopStats, getTopArtists, countGenres, filterOwnedPlaylist, getArtistIds, getPopularSongs, getReleaseYears } from './utils';
 import DatabaseHandler from './database';
 
 dotenv.config();
@@ -191,18 +191,15 @@ app.get('/me/getPlaylistStat', async (req: Request, res: Response): Promise<any>
   let stats = [];
   switch (statType) {
     case 'fav_artist':
-      stats = countArtists(playlistItems);
+      stats = getTopArtists(playlistItems);
       break;
     case 'fav_genre':
-      const artistIds = getArtistIds(playlistItems);
-      // TODO?: This step could be made for efficient by only querying unique artist ids and then looping through the playlist items
-      // rather than getting all artists (including duplicates) and then querying them from Spotify API.
-      // As most time spent loading is from querying the data rather than the processing.
+      const artistIds: string[] = getArtistIds(playlistItems);
       const artistDetails = await getArtistsDetails(access, artistIds);
       if (artistDetails.error) {
         return res.json(artistDetails);
       }
-      stats = countGenres(artistDetails);
+      stats = countGenres(playlistItems, artistDetails);
       break;
     case 'fav_year':
       stats = getReleaseYears(playlistItems);
