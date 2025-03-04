@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import { off } from 'process';
 
 dotenv.config();
 
@@ -144,29 +145,36 @@ export async function getPlaylistItems(access: string, playlistId: string) {
 
   const startBody = await start.json();
   const res: any[] = [startBody]
-
+  const fetchPromises: any[] = []
   let offset = 50;
   while (offset < startBody.total) {
     const offsetStr = `offset=${offset}`;
     const url = 'https://api.spotify.com/v1/playlists/' + playlistId + '/tracks?' + limitStr + '&' + offsetStr;
-    const response = await fetch(url, {
+    const responsePromise = fetch(url, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + access
       }
+    }).then((res) => {
+      if (res.ok) {
+        return res;
+      } else {
+        console.error(`Failed subsequent playlist request: ${res.status} ${res.statusText} at ${offset}-${offset + limit}`);
+        throw res;
+      }
     });
-    if (!response.ok) {
-      console.error(`Failed subsequent playlist request: ${response.status} ${response.statusText}`);
-      return response.json();
-    };
-
-    const responseResolved = await response.json();
-    res.push(responseResolved)
-  
+    fetchPromises.push(responsePromise);
     offset += limit;
   }
 
-  return res;
+  try {
+    const fetchResolved = await Promise.all(fetchPromises);
+    const jsonPromises = fetchResolved.map((f) => f.json());
+    const jsonResolved = await Promise.all(jsonPromises);
+    return res.concat(jsonResolved);
+  } catch (e: any) {
+    return e.json();
+  }
 };
 
 /**
