@@ -180,7 +180,7 @@ export function getArtistIds(playlistItems: any[]): string[] {
 
 /**
  * @param playlistItems Array of Spotify's PlaylistTrackObject
- * @param artistGenres Array of Spotify's ArtistObject
+ * @param artistGenres Map of artist ids to array of their genres
  * 
  * @returns an array of objects: 
  * [{
@@ -204,7 +204,6 @@ export function countGenres(playlistItems: any[], artistGenres: Map<string, stri
     }
     return acc;
   }, new Map());
-
 
   const genreCountArr = Array.from(genreCount);
   genreCountArr.sort((x, y) => y[1] - x[1]);

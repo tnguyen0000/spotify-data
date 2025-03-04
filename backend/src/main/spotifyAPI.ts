@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import { off } from 'process';
 
 dotenv.config();
 
@@ -144,29 +145,36 @@ export async function getPlaylistItems(access: string, playlistId: string) {
 
   const startBody = await start.json();
   const res: any[] = [startBody]
-
+  const fetchPromises: any[] = []
   let offset = 50;
   while (offset < startBody.total) {
     const offsetStr = `offset=${offset}`;
     const url = 'https://api.spotify.com/v1/playlists/' + playlistId + '/tracks?' + limitStr + '&' + offsetStr;
-    const response = await fetch(url, {
+    const responsePromise = fetch(url, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + access
       }
+    }).then((res) => {
+      if (res.ok) {
+        return res;
+      } else {
+        console.error(`Failed subsequent playlist request: ${res.status} ${res.statusText} at ${offset}-${offset + limit}`);
+        throw res;
+      }
     });
-    if (!response.ok) {
-      console.error(`Failed subsequent playlist request: ${response.status} ${response.statusText}`);
-      return response.json();
-    };
-
-    const responseResolved = await response.json();
-    res.push(responseResolved)
-  
+    fetchPromises.push(responsePromise);
     offset += limit;
   }
 
-  return res;
+  try {
+    const fetchResolved = await Promise.all(fetchPromises);
+    const jsonPromises = fetchResolved.map((f) => f.json());
+    const jsonResolved = await Promise.all(jsonPromises);
+    return res.concat(jsonResolved);
+  } catch (e: any) {
+    return e.json();
+  }
 };
 
 /**
@@ -174,32 +182,42 @@ export async function getPlaylistItems(access: string, playlistId: string) {
  * @param access - Access token
  * @param artistIds - Array of artist ids
  * 
- * @returns Array of promises that hopefully resolve ArtistObjects
+ * @returns Map of Artist IDs as keys and array of their genres as the value.
  */
-export async function getArtistsDetails(access: string, artistIds: string[]) {
+export async function getArtistsGenres(access: string, artistIds: string[]) {
   let curr = 0;
   let offset = 50;
   const res: Map<string, string[]> = new Map();
+  const fetchPromises: any[] = []
   while (curr < artistIds.length) {
     const artistIdsStr = `?ids=${artistIds.slice(curr, curr + offset).toString()}`;
     const url = 'https://api.spotify.com/v1/artists' + artistIdsStr;
-    const response = await fetch(url, {
+    const fetchPromise = fetch(url, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + access
       }
+    }).then((res) => {
+      if (res.ok) {
+        return res;
+      } else {
+        console.error(`Failed fetching artist details: ${res.status} ${res.statusText}`);
+        throw res;
+      }
     });
-    if (!response.ok) {
-      console.error(`Failed fetching artist details: ${response.status} ${response.statusText}`);
-      return response.json();
-    };
-    const responseResolved = await response.json();
-    responseResolved.artists.map((a: any) => {
-      res.set(a.id, a.genres);
-    });
+    fetchPromises.push(fetchPromise);
     curr += offset;
   }
 
-  
-  return res;
+  try {
+    const fetchResolved = await Promise.all(fetchPromises);
+    const jsonPromises = fetchResolved.map((f) => f.json());
+    const jsonResolved = await Promise.all(jsonPromises);
+    jsonResolved.map((a: any) => a.artists.map((b: any) => {
+      res.set(b.id, b.genres);
+    }));
+    return res;
+  } catch (e: any) {
+    return e.json();
+  }
 };
