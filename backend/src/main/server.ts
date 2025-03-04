@@ -225,7 +225,7 @@ const server = app.listen(PORT, () => {
   console.log(`Currently running server at ${URL}`)
 });
 
-// 
+// To close server
 process.on('SIGINT', () => {
   MONGO.close();
   server.close(() => console.log(`Closed server at ${URL}`));
