@@ -4,7 +4,7 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import querystring from 'querystring';
 import cors from 'cors';
-import { getRefresh, getTokens, getUser, getTopStats, getPlaylists, getPlaylistItems, getArtistsDetails } from './spotifyAPI';
+import { getRefresh, getTokens, getUser, getTopStats, getPlaylists, getPlaylistItems, getArtistsGenres } from './spotifyAPI';
 import { convertTopStats, getTopArtists, countGenres, filterOwnedPlaylist, getArtistIds, getPopularSongs, getReleaseYears } from './utils';
 import DatabaseHandler from './database';
 
@@ -195,11 +195,11 @@ app.get('/me/getPlaylistStat', async (req: Request, res: Response): Promise<any>
       break;
     case 'fav_genre':
       const artistIds: string[] = getArtistIds(playlistItems);
-      const artistDetails = await getArtistsDetails(access, artistIds);
-      if (artistDetails.error) {
-        return res.json(artistDetails);
+      const artistGenres = await getArtistsGenres(access, artistIds);
+      if (artistGenres.error) {
+        return res.json(artistGenres);
       }
-      stats = countGenres(playlistItems, artistDetails);
+      stats = countGenres(playlistItems, artistGenres);
       break;
     case 'fav_year':
       stats = getReleaseYears(playlistItems);
