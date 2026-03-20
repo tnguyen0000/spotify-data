@@ -30,3 +30,19 @@ The frontend .env file should contain:
 PORT=*YOUR FRONTEND PORT HERE*
 VITE_PORT_BACK=*YOUR BACKEND PORT HERE*
 ```
+
+## Example Images:
+### Home:
+![Home Page](./spotifyAppImages/01login.png)
+
+### Dashboard:
+![Dashboard Page](./spotifyAppImages/02dashboard.png)
+
+### Top Songs:
+![Top Songs (with song hovered)](./spotifyAppImages/03topSongs.png)
+
+### Playlists Stats Page:
+![Playlists Stats Page (with a playlist selected)](./spotifyAppImages/04playliststats.png)
+
+### Top Genres of Particular Playlist:
+![Top Genres of Particular Playlist](./spotifyAppImages/05topGenres.png)
