@@ -1,8 +1,20 @@
+import { useEffect } from 'react';
 import { apiCallBody } from '../api/apiHelpers';
-
+import { useNavigate } from 'react-router-dom';
 import './styles/home.css';
 
 const Home = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+      const access = localStorage.getItem('access_token');
+      const refresh = localStorage.getItem('refresh_token');
+      if (access && refresh) {
+        navigate('/dashboard')
+      } else {
+        
+      };
+    }, []);
+
   return (
     <div id='home'>
       <h1>

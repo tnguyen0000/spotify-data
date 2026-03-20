@@ -17,7 +17,6 @@ const Dashboard = () => {
       getToken(setToken, code, state);
       navigate('/dashboard')
     } else {
-      console.log(localStorage)
       const access = localStorage.getItem('access_token');
       const expiry = localStorage.getItem('access_token_expire');
       const refresh = localStorage.getItem('refresh_token');
@@ -44,7 +43,7 @@ const Dashboard = () => {
         setUser(userParse);
       }
     }
-  }, []);
+  }, [token]);
 
   // Logs user out of the dashboard
   const logout = () => {

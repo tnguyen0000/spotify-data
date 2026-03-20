@@ -7,12 +7,13 @@ The data retrieved includes:
 
 To run, simply use Docker with 'docker compose up --build' in the root directory.
 
-You will need 2 '.env' files, one in the './backend' and the other in './frontend'.
+You will need 2 '.env' files, one in the './backend' and the other in './frontend' (Template env files provided).
 
 The backend .env file should contain:
 ```
 PORT=*YOUR BACKEND PORT HERE*
 PORT_FRONT=*YOUR FRONTEND PORT HERE*
+FRONTEND_URL=*YOUR FRONTEND URL HERE (INCLUDE HTTP/HTTPS)*
 
 CLIENT_ID=*SPOTIFY APP CLIENT ID*
 SECRET_ID=*SPOTIFY APP SECRET ID*

@@ -15,8 +15,9 @@ const PORT = process.env.PORT;
 const PORT_FRONT = process.env.PORT_FRONT;
 const CLIENT_ID = process.env.CLIENT_ID;
 const STATE = process.env.STATE;
-const URL = `http://localhost:${PORT}`;
-const REDIRECT = `http://localhost:${PORT_FRONT}/dashboard`;
+const FRONTEND_URL = process.env.FRONTEND_URL;
+const URL = `http://127.0.0.1:${PORT}`;
+const REDIRECT = `${FRONTEND_URL}:${PORT_FRONT}/dashboard`;
 
 const MONGO = new DatabaseHandler(); 
 
